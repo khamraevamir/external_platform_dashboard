@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "rest_framework",
+    "drf_spectacular",
     'integrations',
 ]
 
@@ -128,3 +130,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GREENWHITE_API_LOGIN = os.getenv("GREENWHITE_API_LOGIN")
 GREENWHITE_API_PASSWORD = os.getenv("GREENWHITE_API_PASSWORD")
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "External Platform Dashboard API",
+    "DESCRIPTION": "API documentation for integration with Greenwhite Smartup",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
