@@ -1,12 +1,12 @@
 from django.core.management.base import BaseCommand
-from integrations.client import GreenwhiteClient
+from integrations.client import SmartupClient
 
 
 class Command(BaseCommand):
     help = "Test connection to Greenwhite API"
 
     def handle(self, *args, **options):
-        client = GreenwhiteClient()
+        client = SmartupClient()
 
         try:
             response = client.get("/")
