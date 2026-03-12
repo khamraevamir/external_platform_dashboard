@@ -145,3 +145,26 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
+
+UNFOLD = {
+    "SITE_TITLE": "Valor",
+    "SITE_HEADER": "Valor",
+    # "SITE_SYMBOL": "monitoring",
+    "SIDEBAR": {
+        "show_search": False,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Отчёты",
+                # "separator": True,
+                "items": [
+                    {
+                        "title": "Сводка продаж",
+                        "icon": "bar_chart",
+                        "link": "/admin/sales-summary/",
+                    },
+                ],
+            },
+        ],
+    },
+}
