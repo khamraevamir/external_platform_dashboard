@@ -1,0 +1,138 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="mx-auto max-w-[1600px] px-6 py-6">
+
+    {% if rates %}
+    <div class="mb-10">
+        <div class="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Курс доллара Trustbank
+        </div>
+        <div class="mt-2 flex flex-wrap gap-6 text-sm text-gray-700">
+            <span><b>Покупка:</b> {{ rates.buy }}</span>
+            <span><b>Продажа:</b> {{ rates.sell }}</span>
+            <!-- <span><b>Курс ЦБ:</b> {{ rates.cb_rate }}</span>
+            <span><b>Обновлено:</b> {{ rates.updated_at }}</span> -->
+        </div>
+    </div>
+    {% endif %}
+    <div class="mb-6">
+        <form method="get" class="flex flex-wrap items-end gap-4">
+    
+            <!-- DATE FROM -->
+            <div class="flex flex-col">
+                <label class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    Дата с
+                </label>
+    
+                <input
+                    type="date"
+                    name="date_from"
+                    value="{{ date_from_input }}"
+                    class="h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm
+                           shadow-sm outline-none transition
+                           focus:border-primary-500
+                           focus:ring-2 focus:ring-primary-500/20"
+                >
+            </div>
+    
+    
+            <!-- DATE TO -->
+            <div class="flex flex-col">
+                <label class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    Дата по
+                </label>
+    
+                <input
+                    type="date"
+                    name="date_to"
+                    value="{{ date_to_input }}"
+                    class="h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm
+                           shadow-sm outline-none transition
+                           focus:border-primary-500
+                           focus:ring-2 focus:ring-primary-500/20"
+                >
+            </div>
+    
+    
+            <!-- APPLY -->
+            <div class="flex flex-col justify-end">
+                <button
+                    type="submit"
+                    class="h-10 rounded-xl bg-primary-600 px-5 text-sm font-medium text-white
+                           shadow-sm transition hover:bg-primary-700"
+                >
+                    Применить
+                </button>
+            </div>
+    
+    
+            <!-- RESET -->
+            <div class="flex flex-col justify-end">
+                <a
+                    href="?"
+                    class="inline-flex h-10 items-center rounded-xl border border-gray-300
+                           bg-white px-5 text-sm font-medium text-gray-700
+                           shadow-sm transition hover:bg-gray-50"
+                >
+                    Сброс
+                </a>
+            </div>
+    
+        </form>
+    </div>
+
+    {% if data %}
+
+
+        <div class="overflow-x-auto rounded-xl shadow-sm border border-gray-200">
+            <table class="w-full bg-white">
+                <thead class="bg-gray-50 sticky top-0 z-10">
+                    <tr>
+                        <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide text-primary-700 bg-gray-100">
+                            {{ data.columns.0 }}
+                        </th>
+                      
+                        <th class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wide text-primary-700 bg-gray-100">
+                            Итог в USD
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.rows %}
+                    <tr class="transition hover:bg-primary-50 border-b border-gray-100">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {{ row.sales_manager }}
+                        </td>
+                       
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 tabular-nums whitespace-nowrap">
+                            {{ row.converted_total_usd }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="border-b border-gray-100">
+                        <td colspan="4" class="px-6 py-8 text-center text-gray-400 text-sm">Нет данных для отображения за выбранный период.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="bg-primary-50">
+                        <td class="px-6 py-4 text-sm font-bold text-gray-900">
+                            {{ data.totals.sales_manager }}
+                        </td>
+                    
+                        <td class="px-6 py-4 text-right text-sm font-bold text-gray-900 tabular-nums">
+                            {{ data.totals.converted_total_usd }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+
+    {% endif %}
+  
+</div>
+
+
+{% endblock %}

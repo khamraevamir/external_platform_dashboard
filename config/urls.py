@@ -1,4 +1,5 @@
 from django.contrib import admin
+from integrations.admin_views import sales_summary_view
 from django.urls import path, include
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -7,6 +8,7 @@ from drf_spectacular.views import (
 )
 
 urlpatterns = [
+    path("admin/sales-summary/", admin.site.admin_view(sales_summary_view), name="sales-summary"),
     path("admin/", admin.site.urls),
 
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

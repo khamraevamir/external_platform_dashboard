@@ -150,3 +150,19 @@ class GreenwhiteSalesSummaryDataAPIView(APIView):
                 status=500,
             )
    
+
+class TrustbankUsdRateAPIView(APIView):
+    def get(self, request):
+        try:
+            service = SmartupService()
+            data = service.get_trustbank_usd_rate()
+            return Response(data)
+        except Exception as e:
+            return Response(
+                {
+                    "status": "error",
+                    "error_type": e.__class__.__name__,
+                    "message": str(e),
+                },
+                status=500,
+            )  

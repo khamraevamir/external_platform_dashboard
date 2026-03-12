@@ -205,3 +205,6 @@ class SmartupService:
             "rows": parsed["rows"],
             "totals": parsed["totals"],
         }
+
+    def get_trustbank_usd_rate(self):
+        return self.client.get_trustbank_usd_rate()
