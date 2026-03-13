@@ -1,49 +1,73 @@
 import json
 
 from .client import SmartupClient
-
 from .parsers.sales_summary_parser import SalesSummaryParser
 
+
 SALES_SUMMARY_TEMPLATE_ID = "151426"
+DEFAULT_STATUS_IDS = ["A", "B#V", "B#S", "B#W", "B#E", "B#N"]
+DEFAULT_INVENTORY_KIND_IDS = ["G"]
 
 
 class SmartupService:
-    def __init__(self):
+    def __init__(self) -> None:
         self.client = SmartupClient()
+        self._session_context = None
 
-
-    def get_raw_session_data(self):
+    def get_raw_session_data(self) -> dict:
         return self.client.get_session_data()
 
-
-    def _get_session_context(self):
-        data = self.get_raw_session_data()
-
+    def _build_session_context(self, data: dict) -> dict:
         settings_data = data.get("settings", {})
         user_data = data.get("user", {})
         projects = data.get("projects", [])
-        first_project = projects[0] if projects else {}
 
+        if not projects:
+            raise ValueError("No projects found in Smartup session data")
+
+        first_project = projects[0]
         raw_filials = first_project.get("filials", [])
+
         filials = [
             {"id": item[0], "name": item[1]}
             for item in raw_filials
             if len(item) >= 2
         ]
 
+        project_code = settings_data.get("init_project") or first_project.get("code")
+        filial_id = settings_data.get("init_filial")
+        user_id = user_data.get("user_id")
+        lang_code = data.get("lang_code", "ru")
+        project_hash = first_project.get("hash")
+
+        if not project_code:
+            raise ValueError("Project code not found in Smartup session data")
+        if not project_hash:
+            raise ValueError("Project hash not found in Smartup session data")
+        if not filial_id:
+            raise ValueError("Filial id not found in Smartup session data")
+        if not user_id:
+            raise ValueError("User id not found in Smartup session data")
+
         return {
             "raw": data,
             "user": user_data,
-            "project_code": settings_data.get("init_project", first_project.get("code", "trade")),
-            "filial_id": settings_data.get("init_filial"),
-            "user_id": user_data.get("user_id"),
-            "lang_code": data.get("lang_code", "ru"),
-            "project_hash": first_project.get("hash", "01"),
+            "project_code": project_code,
+            "filial_id": filial_id,
+            "user_id": user_id,
+            "lang_code": lang_code,
+            "project_hash": project_hash,
             "filials": filials,
         }
 
+    def _get_session_context(self) -> dict:
+        if self._session_context is None:
+            data = self.get_raw_session_data()
+            self._session_context = self._build_session_context(data)
 
-    def get_session_summary(self):
+        return self._session_context
+
+    def get_session_summary(self) -> dict:
         context = self._get_session_context()
         data = context["raw"]
 
@@ -57,14 +81,13 @@ class SmartupService:
             "filials": context["filials"],
         }
 
-
     def _build_sales_summary_fields(
         self,
         date_from: str,
         date_to: str,
-        status_ids=None,
-        inventory_kind_ids=None,
-    ):
+        status_ids: list[str] | None = None,
+        inventory_kind_ids: list[str] | None = None,
+    ) -> dict:
         return {
             "levels": [
                 {
@@ -85,7 +108,7 @@ class SmartupService:
                     "level_code": "status",
                     "name": "Статус",
                     "mark_code": "",
-                    "ids": status_ids or ["A", "B#V", "B#S", "B#W", "B#E", "B#N"],
+                    "ids": status_ids or DEFAULT_STATUS_IDS,
                     "filter_names": ["selected"],
                     "values": "name##",
                 },
@@ -93,7 +116,7 @@ class SmartupService:
                     "level_code": "inventory_kind",
                     "name": "Тип ТМЦ",
                     "mark_code": "",
-                    "ids": inventory_kind_ids or ["G"],
+                    "ids": inventory_kind_ids or DEFAULT_INVENTORY_KIND_IDS,
                     "filter_names": ["Товар"],
                     "values": "name##",
                 },
@@ -115,14 +138,13 @@ class SmartupService:
             ],
         }
 
-
     def _build_sales_summary_params(
         self,
         date_from: str,
         date_to: str,
-        status_ids=None,
-        inventory_kind_ids=None,
-    ):
+        status_ids: list[str] | None = None,
+        inventory_kind_ids: list[str] | None = None,
+    ) -> dict:
         context = self._get_session_context()
         fields = self._build_sales_summary_fields(
             date_from=date_from,
@@ -146,14 +168,13 @@ class SmartupService:
             "-lang_code": context["lang_code"],
         }
 
-
     def get_sales_summary_report(
         self,
         date_from: str,
         date_to: str,
-        status_ids=None,
-        inventory_kind_ids=None,
-    ):
+        status_ids: list[str] | None = None,
+        inventory_kind_ids: list[str] | None = None,
+    ) -> dict:
         context = self._get_session_context()
         params = self._build_sales_summary_params(
             date_from=date_from,
@@ -161,8 +182,6 @@ class SmartupService:
             status_ids=status_ids,
             inventory_kind_ids=inventory_kind_ids,
         )
-
-        html = self.client.run_report(params)
 
         return {
             "template_id": SALES_SUMMARY_TEMPLATE_ID,
@@ -172,39 +191,39 @@ class SmartupService:
             "lang_code": context["lang_code"],
             "date_from": date_from,
             "date_to": date_to,
-            "html": html,
+            "html": self.client.run_report(params),
         }
-
 
     def get_sales_summary_report_data(
         self,
         date_from: str,
         date_to: str,
-        status_ids=None,
-        inventory_kind_ids=None,
-    ):
+        status_ids: list[str] | None = None,
+        inventory_kind_ids: list[str] | None = None,
+    ) -> dict:
         report = self.get_sales_summary_report(
             date_from=date_from,
             date_to=date_to,
             status_ids=status_ids,
             inventory_kind_ids=inventory_kind_ids,
         )
-
         parsed = SalesSummaryParser.parse(report["html"])
 
         return {
-            "template_id": report["template_id"],
-            "project_code": report["project_code"],
-            "filial_id": report["filial_id"],
-            "user_id": report["user_id"],
-            "lang_code": report["lang_code"],
-            "date_from": report["date_from"],
-            "date_to": report["date_to"],
+            **{key: report[key] for key in (
+                "template_id",
+                "project_code",
+                "filial_id",
+                "user_id",
+                "lang_code",
+                "date_from",
+                "date_to",
+            )},
             "meta": parsed["meta"],
             "columns": parsed["columns"],
             "rows": parsed["rows"],
             "totals": parsed["totals"],
         }
 
-    def get_trustbank_usd_rate(self):
+    def get_trustbank_usd_rate(self) -> dict:
         return self.client.get_trustbank_usd_rate()
