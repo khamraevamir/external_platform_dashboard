@@ -128,12 +128,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+SMARTUP_BASE_URL = os.getenv("SMARTUP_BASE_URL")
 SMARTUP_API_LOGIN = os.getenv("SMARTUP_API_LOGIN")
 SMARTUP_API_PASSWORD = os.getenv("SMARTUP_API_PASSWORD")
 SMARTUP_PROJECT_CODE = os.getenv("SMARTUP_PROJECT_CODE")
 SMARTUP_FILIAL_ID = os.getenv("SMARTUP_FILIAL_ID")
-SMARTUP_BASE_URL = "https://smartup.online/b"
 
+
+GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / "credentials" / "google-service-account.json"
+GOOGLE_SHEET_ID = os.getenv("GOOGLE_SHEET_ID")
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
