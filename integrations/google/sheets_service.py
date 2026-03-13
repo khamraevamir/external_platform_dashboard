@@ -1,11 +1,10 @@
-from datetime import datetime
 import calendar
-
-from django.conf import settings
-
 import gspread
-from google.oauth2.service_account import Credentials
+from datetime import datetime
 from gspread.exceptions import WorksheetNotFound
+from django.conf import settings
+from google.oauth2.service_account import Credentials
+from integrations.utils.numbers import parse_number
 
 
 class GoogleSheetsService:
@@ -39,18 +38,7 @@ class GoogleSheetsService:
     def normalize(self, value):
         return str(value or "").strip().lower()
 
-    def parse_number(self, value):
-        cleaned = (
-            str(value or "0")
-            .replace("\xa0", "")
-            .replace(" ", "")
-            .replace(",", ".")
-        )
 
-        try:
-            return float(cleaned)
-        except (TypeError, ValueError):
-            return 0.0
 
     def get_month_sheet_name(self, date_obj=None):
         date_obj = date_obj or datetime.today()
@@ -84,7 +72,7 @@ class GoogleSheetsService:
 
         for item in payload:
             full_name = self.normalize(item.get("sales_manager"))
-            total_usd = self.parse_number(item.get("converted_total_usd"))
+            total_usd = parse_number(item.get("converted_total_usd"))
 
             if not full_name:
                 results["skipped"].append({
