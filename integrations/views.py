@@ -151,6 +151,128 @@ class GreenwhiteSalesSummaryDataAPIView(APIView):
             )
    
 
+class GreenwhitePaymentReportDataAPIView(APIView):
+
+    @extend_schema(
+        summary="Smartup Payment Report",
+        description="""
+Returns payment data from **Smartup ERP** for the selected date range.
+
+The report includes:
+- client id
+- client name
+- tin
+- payment date
+- collector
+- payment method
+- currency
+- amount
+- totals by currency
+
+Required parameters:
+
+- **date_from**
+- **date_to**
+
+Date format must be:
+
+`DD.MM.YYYY`
+""",
+        parameters=[
+            OpenApiParameter(
+                name="date_from",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                description="Start date of the report period. Example: **01.03.2026**",
+            ),
+            OpenApiParameter(
+                name="date_to",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                description="End date of the report period. Example: **31.03.2026**",
+            ),
+        ],
+        examples=[
+            OpenApiExample(
+                "Successful Response",
+                value={
+                    "date_from": "01.03.2026",
+                    "date_to": "31.03.2026",
+                    "title": "Оплаты с 01.03.2026 по 31.03.2026",
+                    "columns": [
+                        "ИД клиента",
+                        "Клиент",
+                        "ИНН",
+                        "Дата оплаты",
+                        "Инкассатор",
+                        "Способ оплаты",
+                        "Валюта",
+                        "Сумма"
+                    ],
+                    "rows": [
+                        {
+                            "client_id": "12345",
+                            "client": "ООО Example",
+                            "tin": "305123456",
+                            "payment_date": "15.03.2026",
+                            "collector": "Иванов",
+                            "payment_method": "Наличные",
+                            "currency": "Узбекский сум",
+                            "amount": "1 250 000"
+                        }
+                    ],
+                    "totals": {
+                        "Узбекский сум": "431 225 555.44043",
+                        "Доллар США": "140 117.5793"
+                    }
+                },
+            ),
+            OpenApiExample(
+                "Missing Parameters",
+                value={
+                    "status": "error",
+                    "message": "date_from and date_to are required. Example: 01.03.2026"
+                },
+            ),
+        ],
+    )
+    def get(self, request):
+        date_from = request.query_params.get("date_from")
+        date_to = request.query_params.get("date_to")
+
+        if not date_from or not date_to:
+            return Response(
+                {
+                    "status": "error",
+                    "message": "date_from and date_to are required. Example: 01.03.2026",
+                },
+                status=400,
+            )
+
+        try:
+            service = SmartupService()
+
+            result = service.get_payment_report_data(
+                date_from=date_from,
+                date_to=date_to,
+            )
+
+            return Response(result)
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": "error",
+                    "error_type": e.__class__.__name__,
+                    "message": str(e),
+                },
+                status=500,
+            )
+
+
+
 class TrustbankUsdRateAPIView(APIView):
     def get(self, request):
         try:

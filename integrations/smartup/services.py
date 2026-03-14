@@ -2,9 +2,11 @@ import json
 
 from .client import SmartupClient
 from .parsers.sales_summary_parser import SalesSummaryParser
-
+from .parsers.payment_report_parser import PaymentReportParser
 
 SALES_SUMMARY_TEMPLATE_ID = "151426"
+PAYMENT_REPORT_PATH = "/anor/rep/mkcs/payment:run"
+
 DEFAULT_STATUS_IDS = ["A", "B#V", "B#S", "B#W", "B#E", "B#N"]
 DEFAULT_INVENTORY_KIND_IDS = ["G"]
 
@@ -227,3 +229,44 @@ class SmartupService:
 
     def get_trustbank_usd_rate(self) -> dict:
         return self.client.get_trustbank_usd_rate()
+
+
+    def get_payment_report(self, date_from: str, date_to: str) -> dict:
+        context = self._get_session_context()
+
+        params = {
+            "rt": "html",
+            "begin_date": date_from,
+            "end_date": date_to,
+            "posted": "Y",
+            "person_group_id": "",
+            "-project_code": context["project_code"],
+            "-project_hash": context["project_hash"],
+            "-filial_id": context["filial_id"],
+            "-user_id": context["user_id"],
+            "-lang_code": context["lang_code"],
+        }
+
+        html = self.client.get(PAYMENT_REPORT_PATH, params=params)
+
+        return {
+            "date_from": date_from,
+            "date_to": date_to,
+            "html": html,
+        }
+    def get_payment_report_data(self, date_from: str, date_to: str) -> dict:
+        report = self.get_payment_report(
+            date_from=date_from,
+            date_to=date_to,
+        )
+
+        parsed = PaymentReportParser.parse(report["html"])
+
+        return {
+            "date_from": report["date_from"],
+            "date_to": report["date_to"],
+            "title": parsed["title"],
+            "columns": parsed["columns"],
+            "rows": parsed["rows"],
+            "totals": parsed["totals"],
+        }

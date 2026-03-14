@@ -4,7 +4,6 @@ from django.conf import settings
 
 
 class SmartupClient:
-
     DEFAULT_TIMEOUT = 30
     TRUSTBANK_RATES_URL = "https://trustbank.uz/ru/services/exchange-rates/"
 
@@ -27,6 +26,7 @@ class SmartupClient:
 
     def get(self, endpoint: str, params=None):
         url = f"{self.base_url}{endpoint}"
+        print("SMARTUP GET URL:", url)
         response = self.session.get(url, params=params, timeout=self.DEFAULT_TIMEOUT)
         response.raise_for_status()
         return response.text
@@ -37,12 +37,9 @@ class SmartupClient:
     def run_report(self, params: dict):
         return self.get("/trade/rep/mbi/tdeal/order:run", params=params)
 
-    
     def get_trustbank_usd_rate(self):
-        url = "https://trustbank.uz/ru/services/exchange-rates/"
-
         response = requests.get(
-            url,
+            self.TRUSTBANK_RATES_URL,
             headers={"User-Agent": "Mozilla/5.0"},
             timeout=20,
         )
@@ -77,5 +74,5 @@ class SmartupClient:
             "sell": sell,
             "cb_rate": cb_rate,
             "updated_at": updated_at,
-            "source": url,
+            "source": self.TRUSTBANK_RATES_URL,
         }

@@ -3,6 +3,7 @@ from .views import (
     HealthCheckAPIView,
     GreenwhiteSessionAPIView,
     GreenwhiteSalesSummaryDataAPIView,
+    GreenwhitePaymentReportDataAPIView,
     TrustbankUsdRateAPIView
 )
 
@@ -14,6 +15,8 @@ urlpatterns = [
         GreenwhiteSalesSummaryDataAPIView.as_view(),
         name="greenwhite-sales-summary",
     ),
+    path("greenwhite/payment-report/", GreenwhitePaymentReportDataAPIView.as_view(), name="greenwhite-payment-report"),
+
     path(
         "currency/trustbank/usd/",
         TrustbankUsdRateAPIView.as_view(),

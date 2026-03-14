@@ -2,17 +2,129 @@
 
 {% block content %}
 <div class="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+
+
+    {% if error %}
+    <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        {{ error }}
+    </div>
+    {% endif %}
+
     <div class="mb-6">
-        <h1 class="text-xl font-semibold text-gray-900">Выручка</h1>
-        <p class="mt-1 text-sm text-gray-500">
-            Новая страница аналитики по выручке.
-        </p>
+        <form method="get" class="flex flex-wrap items-end gap-4">
+    
+            <!-- DATE FROM -->
+            <div class="flex flex-col">
+                <label class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    Дата с
+                </label>
+    
+                <input
+                    type="date"
+                    name="date_from"
+                    value="{{ date_from_input }}"
+                    class="h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm
+                           
+                           focus:border-primary-500
+                           focus:ring-2 focus:ring-primary-500/20"
+                >
+            </div>
+    
+    
+            <!-- DATE TO -->
+            <div class="flex flex-col">
+                <label class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    Дата по
+                </label>
+    
+                <input
+                    type="date"
+                    name="date_to"
+                    value="{{ date_to_input }}"
+                    class="h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm
+                           focus:border-primary-500
+                           focus:ring-2 focus:ring-primary-500/20"
+                >
+            </div>
+    
+    
+            <!-- APPLY -->
+            <div class="flex flex-col justify-end">
+                <button
+                    type="submit"
+                    class="h-10 rounded-xl bg-primary-600 px-5 text-sm font-medium text-white
+                        transition hover:bg-primary-700"
+                >
+                    Применить
+                </button>
+            </div>
+    
+    
+            <!-- RESET -->
+            <div class="flex flex-col justify-end">
+                <a
+                    href="?"
+                    class="inline-flex h-10 items-center rounded-xl border border-gray-300
+                           bg-white px-5 text-sm font-medium text-gray-700
+                           transition hover:bg-gray-50"
+                >
+                    Сброс
+                </a>
+            </div>
+    
+        </form>
     </div>
 
-    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <p class="text-sm text-gray-600">
-            Контент страницы выручки.
-        </p>
+
+    {% if data and data.rows %}
+    <div class="overflow-x-auto">
+        <table class="min-w-[350px] w-full border-spacing-0 border-separate">
+            <thead>
+                <tr>
+                    <th class="p-3 text-left text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
+                        Инкассатор
+                    </th>
+                    <th class="p-3 text-right text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
+                        Итог в USD
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data.rows %}
+                <tr class="even:bg-gray-50 hover:bg-primary-50 transition-colors">
+                    <td class="p-3 text-gray-900">
+                        {{ row.collector }}
+                    </td>
+                    <td class="p-3 text-right font-medium text-gray-900 tabular-nums">
+                        {{ row.total_usd }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="bg-gray-100">
+                    <td class="p-3 font-bold text-gray-900">
+                        {{ data.totals.collector }}
+                    </td>
+                    <td class="p-3 text-right font-bold text-gray-900 tabular-nums">
+                        {{ data.totals.total_usd }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
     </div>
+    {% else %}
+    <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center shadow-sm">
+        <div class="mx-auto max-w-md">
+            <h3 class="text-sm font-semibold text-gray-900">
+                Нет данных для отображения
+            </h3>
+            <p class="mt-2 text-sm text-gray-500">
+                Выберите диапазон дат и примените фильтр, чтобы увидеть отчет по выручке.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
