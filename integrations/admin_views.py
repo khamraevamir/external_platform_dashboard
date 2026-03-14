@@ -2,7 +2,6 @@ from datetime import datetime
 import calendar
 from decimal import Decimal, InvalidOperation
 
-from django.contrib import admin
 from django.template.response import TemplateResponse
 
 from integrations.smartup.services import SmartupService
@@ -24,7 +23,7 @@ def format_decimal(value, places=2):
     return f"{value.quantize(quant):,}".replace(",", " ")
 
 
-def sales_summary_view(request):
+def sales_summary_view(request, admin_site):
     date_from_input = request.GET.get("date_from", "")
     date_to_input = request.GET.get("date_to", "")
 
@@ -71,8 +70,6 @@ def sales_summary_view(request):
         except Exception:
             rates = None
 
-        # считаем новую последнюю колонку:
-        # USD + (UZS / курс продажи)
         if rates and rates.get("sell"):
             sell_rate = to_decimal(rates["sell"])
 
@@ -92,7 +89,8 @@ def sales_summary_view(request):
             else:
                 for row in data.get("rows", []):
                     row["converted_total_usd"] = "—"
-                data["totals"]["converted_total_usd"] = "—"
+                if data and "totals" in data:
+                    data["totals"]["converted_total_usd"] = "—"
         else:
             for row in data.get("rows", []):
                 row["converted_total_usd"] = "—"
@@ -103,7 +101,7 @@ def sales_summary_view(request):
         error = str(e)
 
     context = {
-        **admin.site.each_context(request),
+        **admin_site.each_context(request),
         "title": "Сводка продаж",
         "data": data,
         "rates": rates,
@@ -115,5 +113,18 @@ def sales_summary_view(request):
     return TemplateResponse(
         request,
         "admin/sales_summary.html",
+        context,
+    )
+
+
+def revenue_view(request, admin_site):
+    context = {
+        **admin_site.each_context(request),
+        "title": "Выручка",
+    }
+
+    return TemplateResponse(
+        request,
+        "admin/revenue.html",
         context,
     )

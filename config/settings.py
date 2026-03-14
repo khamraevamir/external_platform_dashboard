@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.urls import reverse_lazy
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -161,13 +162,19 @@ UNFOLD = {
                 "title": "Отчёты",
                 # "separator": True,
                 "items": [
-                    {
+                 {
                         "title": "Сводка продаж",
                         "icon": "bar_chart",
-                        "link": "/admin/sales-summary/",
+                        "link": reverse_lazy("admin:sales-summary"),
+                    },
+                    {
+                        "title": "Выручка",
+                        "icon": "payments",
+                        "link": reverse_lazy("admin:revenue"),
                     },
                 ],
             },
+            
         ],
     },
 }
