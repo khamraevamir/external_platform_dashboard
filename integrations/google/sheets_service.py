@@ -39,6 +39,14 @@ class GoogleSheetsService:
         return str(value or "").strip().lower()
 
 
+    def normalize_short_name(self, value):
+        parts = self.normalize(value).split()
+
+        if len(parts) >= 2:
+            return f"{parts[0]} {parts[1]}"
+
+        return " ".join(parts)
+
 
     def get_month_sheet_name(self, date_obj=None):
         date_obj = date_obj or datetime.today()
@@ -58,111 +66,10 @@ class GoogleSheetsService:
         return f"{column}{row}"
 
     def update_sales_summary(self, payload):
-        sheet = self.get_current_month_sheet()
-        values = sheet.get_all_values()
+        return self.update_metric_summary(payload, criteria_name="Савдо")
 
-        results = {
-            "status": "ok",
-            "sheet": sheet.title,
-            "updated": [],
-            "skipped": [],
-        }
-
-        batch_updates = []
-
-        for item in payload:
-            full_name = self.normalize(item.get("sales_manager"))
-            total_usd = parse_number(item.get("converted_total_usd"))
-
-            if not full_name:
-                results["skipped"].append({
-                    "sales_manager": item.get("sales_manager"),
-                    "reason": "empty_name",
-                })
-                continue
-
-            matches = []
-            for row_index, row_values in enumerate(values):
-                fio = self.normalize(
-                    row_values[self.COL_FIO] if len(row_values) > self.COL_FIO else ""
-                )
-                if fio == full_name:
-                    matches.append(row_index)
-
-            if len(matches) == 0:
-                results["skipped"].append({
-                    "sales_manager": item.get("sales_manager"),
-                    "reason": "employee_not_found",
-                })
-                continue
-
-            if len(matches) > 1:
-                results["skipped"].append({
-                    "sales_manager": item.get("sales_manager"),
-                    "reason": "multiple_matches",
-                })
-                continue
-
-            employee_row = matches[0]
-
-            position_value = self.normalize(
-                values[employee_row][self.COL_POSITION]
-                if len(values[employee_row]) > self.COL_POSITION else ""
-            )
-
-            if "супервайзер" in position_value:
-                results["skipped"].append({
-                    "sales_manager": item.get("sales_manager"),
-                    "reason": "supervisor_ignored",
-                })
-                continue
-
-            savdo_row = None
-
-            for row_index in range(employee_row, len(values)):
-                if row_index > employee_row:
-                    next_employee = self.normalize(
-                        values[row_index][self.COL_FIO]
-                        if len(values[row_index]) > self.COL_FIO else ""
-                    )
-                    if next_employee:
-                        break
-
-                criteria = self.normalize(
-                    values[row_index][self.COL_CRITERIA]
-                    if len(values[row_index]) > self.COL_CRITERIA else ""
-                )
-
-                if criteria == "савдо":
-                    savdo_row = row_index
-                    break
-
-            if savdo_row is None:
-                results["skipped"].append({
-                    "sales_manager": item.get("sales_manager"),
-                    "reason": "savdo_row_not_found",
-                })
-                continue
-
-            row_1_based = savdo_row + 1
-            col_1_based = self.COL_FACT + 1
-            cell_a1 = self.to_a1(col_1_based, row_1_based)
-
-            batch_updates.append({
-                "range": cell_a1,
-                "values": [[total_usd]],
-            })
-
-            results["updated"].append({
-                "sales_manager": item.get("sales_manager"),
-                "cell": cell_a1,
-                "value": total_usd,
-            })
-
-        if batch_updates:
-            sheet.batch_update(batch_updates)
-
-        return results
+    def update_revenue_summary(self, payload):
+        return self.update_metric_summary(payload, criteria_name="Выручка")
 
     def run_monthly_sheet_creation_if_needed(self):
         today = datetime.today()
@@ -250,3 +157,119 @@ class GoogleSheetsService:
 
         if clear_requests:
             sheet.batch_clear(clear_requests)
+
+    def update_metric_summary(self, payload, criteria_name):
+        sheet = self.get_current_month_sheet()
+        values = sheet.get_all_values()
+
+        results = {
+            "status": "ok",
+            "sheet": sheet.title,
+            "criteria_name": criteria_name,
+            "updated": [],
+            "skipped": [],
+        }
+
+        batch_updates = []
+        target_criteria = self.normalize(criteria_name)
+
+        for item in payload:
+            source_name = item.get("name") or item.get("sales_manager") or item.get("collector") or ""
+            short_name = self.normalize_short_name(source_name)
+            raw_value = (
+                item.get("value")
+                or item.get("converted_total_usd")
+                or item.get("total_usd")
+                or 0
+            )
+            total_value = parse_number(raw_value)
+
+            if not short_name:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "empty_name",
+                })
+                continue
+
+            matches = []
+            for row_index, row_values in enumerate(values):
+                fio = row_values[self.COL_FIO] if len(row_values) > self.COL_FIO else ""
+                fio_short = self.normalize_short_name(fio)
+
+                if fio_short == short_name:
+                    matches.append(row_index)
+
+            if len(matches) == 0:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "employee_not_found",
+                })
+                continue
+
+            if len(matches) > 1:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "multiple_matches",
+                })
+                continue
+
+            employee_row = matches[0]
+
+            position_value = self.normalize(
+                values[employee_row][self.COL_POSITION]
+                if len(values[employee_row]) > self.COL_POSITION else ""
+            )
+
+            if "супервайзер" in position_value:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "supervisor_ignored",
+                })
+                continue
+
+            target_row = None
+
+            for row_index in range(employee_row, len(values)):
+                if row_index > employee_row:
+                    next_employee = self.normalize(
+                        values[row_index][self.COL_FIO]
+                        if len(values[row_index]) > self.COL_FIO else ""
+                    )
+                    if next_employee:
+                        break
+
+                criteria = self.normalize(
+                    values[row_index][self.COL_CRITERIA]
+                    if len(values[row_index]) > self.COL_CRITERIA else ""
+                )
+
+                if criteria == target_criteria:
+                    target_row = row_index
+                    break
+
+            if target_row is None:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "criteria_row_not_found",
+                })
+                continue
+
+            row_1_based = target_row + 1
+            col_1_based = self.COL_FACT + 1
+            cell_a1 = self.to_a1(col_1_based, row_1_based)
+
+            batch_updates.append({
+                "range": cell_a1,
+                "values": [[total_value]],
+            })
+
+            results["updated"].append({
+                "name": source_name,
+                "cell": cell_a1,
+                "value": total_value,
+            })
+
+        if batch_updates:
+            sheet.batch_update(batch_updates)
+
+        return results

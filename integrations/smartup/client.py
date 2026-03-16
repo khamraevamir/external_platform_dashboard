@@ -26,7 +26,6 @@ class SmartupClient:
 
     def get(self, endpoint: str, params=None):
         url = f"{self.base_url}{endpoint}"
-        print("SMARTUP GET URL:", url)
         response = self.session.get(url, params=params, timeout=self.DEFAULT_TIMEOUT)
         response.raise_for_status()
         return response.text
@@ -38,41 +37,50 @@ class SmartupClient:
         return self.get("/trade/rep/mbi/tdeal/order:run", params=params)
 
     def get_trustbank_usd_rate(self):
-        response = requests.get(
-            self.TRUSTBANK_RATES_URL,
-            headers={"User-Agent": "Mozilla/5.0"},
-            timeout=20,
-        )
-        response.raise_for_status()
+        # response = requests.get(
+        #     self.TRUSTBANK_RATES_URL,
+        #     headers={"User-Agent": "Mozilla/5.0"},
+        #     timeout=20,
+        # )
+        # response.raise_for_status()
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        text = soup.get_text("\n", strip=True)
-        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        # soup = BeautifulSoup(response.text, "html.parser")
+        # text = soup.get_text("\n", strip=True)
+        # lines = [line.strip() for line in text.splitlines() if line.strip()]
 
-        usd_index = None
-        for i, line in enumerate(lines):
-            if line == "USD":
-                usd_index = i
-                break
+        # usd_index = None
+        # for i, line in enumerate(lines):
+        #     if line == "USD":
+        #         usd_index = i
+        #         break
 
-        if usd_index is None:
-            raise ValueError("USD rate not found on Trustbank page")
+        # if usd_index is None:
+        #     raise ValueError("USD rate not found on Trustbank page")
 
-        buy = lines[usd_index + 1]
-        sell = lines[usd_index + 2]
-        cb_rate = lines[usd_index + 3]
+        # buy = lines[usd_index + 1]
+        # sell = lines[usd_index + 2]
+        # cb_rate = lines[usd_index + 3]
 
-        updated_at = None
-        for line in lines:
-            if "покупка/продажа" in line.lower():
-                updated_at = line
-                break
+        # updated_at = None
+        # for line in lines:
+        #     if "покупка/продажа" in line.lower():
+        #         updated_at = line
+        #         break
+
+        # return {
+        #     "currency": "USD",
+        #     "buy": buy,
+        #     "sell": sell,
+        #     "cb_rate": cb_rate,
+        #     "updated_at": updated_at,
+        #     "source": self.TRUSTBANK_RATES_URL,
+        # }
 
         return {
             "currency": "USD",
-            "buy": buy,
-            "sell": sell,
-            "cb_rate": cb_rate,
-            "updated_at": updated_at,
-            "source": self.TRUSTBANK_RATES_URL,
+            "buy": "buy",
+            "sell": "12200",
+            "cb_rate": "cb_rate",
+            "updated_at": "updated_at",
+            "source": "",
         }

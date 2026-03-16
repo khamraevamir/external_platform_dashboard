@@ -77,14 +77,15 @@
 
 
     {% if data and data.rows %}
-    <div class="overflow-x-auto">
-        <table class="min-w-[350px] w-full border-spacing-0 border-separate">
+
+    <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+        <table class="w-full border-separate" style="border-spacing: 0">
             <thead>
                 <tr>
-                    <th class="p-3 text-left text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
                         Инкассатор
                     </th>
-                    <th class="p-3 text-right text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
                         Итог в USD
                     </th>
                 </tr>
@@ -92,27 +93,28 @@
             <tbody>
                 {% for row in data.rows %}
                 <tr class="even:bg-gray-50 hover:bg-primary-50 transition-colors">
-                    <td class="p-3 text-gray-900">
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
                         {{ row.collector }}
                     </td>
-                    <td class="p-3 text-right font-medium text-gray-900 tabular-nums">
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
                         {{ row.total_usd }}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
-                <tr class="bg-gray-100">
-                    <td class="p-3 font-bold text-gray-900">
+                <tr class="bg-gray-100 font-bold">
+                    <td class="px-4 py-3 text-gray-900">
                         {{ data.totals.collector }}
                     </td>
-                    <td class="p-3 text-right font-bold text-gray-900 tabular-nums">
+                    <td class="px-4 py-3 text-gray-900">
                         {{ data.totals.total_usd }}
                     </td>
                 </tr>
             </tfoot>
         </table>
     </div>
+
     {% else %}
     <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center shadow-sm">
         <div class="mx-auto max-w-md">

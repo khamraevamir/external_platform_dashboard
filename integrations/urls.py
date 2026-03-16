@@ -4,7 +4,9 @@ from .views import (
     GreenwhiteSessionAPIView,
     GreenwhiteSalesSummaryDataAPIView,
     GreenwhitePaymentReportDataAPIView,
-    TrustbankUsdRateAPIView
+    TrustbankUsdRateAPIView,
+    GreenwhiteRouteAnalysisDataAPIView,
+
 )
 
 urlpatterns = [
@@ -16,6 +18,7 @@ urlpatterns = [
         name="greenwhite-sales-summary",
     ),
     path("greenwhite/payment-report/", GreenwhitePaymentReportDataAPIView.as_view(), name="greenwhite-payment-report"),
+    path("greenwhite/route-analysis/", GreenwhiteRouteAnalysisDataAPIView.as_view(), name="greenwhite-route-analysis"),
 
     path(
         "currency/trustbank/usd/",

@@ -272,6 +272,106 @@ Date format must be:
             )
 
 
+class GreenwhiteRouteAnalysisDataAPIView(APIView):
+
+    @extend_schema(
+        summary="Smartup Route Analysis Report",
+        description="""
+Returns route analysis data from **Smartup ERP** for the selected date range.
+
+This endpoint is used for attendance analytics and extracts:
+- staff
+- P
+- PD
+
+Required parameters:
+
+- **date_from**
+- **date_to**
+
+Date format must be:
+
+`DD.MM.YYYY`
+""",
+        parameters=[
+            OpenApiParameter(
+                name="date_from",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                description="Start date of the report period. Example: **01.03.2026**",
+            ),
+            OpenApiParameter(
+                name="date_to",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                description="End date of the report period. Example: **31.03.2026**",
+            ),
+        ],
+        examples=[
+            OpenApiExample(
+                "Successful Response",
+                value={
+                    "date_from": "01.03.2026",
+                    "date_to": "31.03.2026",
+                    "title": "Анализ-маршрута",
+                    "rows": [
+                        {
+                            "staff": "ТП Дилшод",
+                            "p": "63",
+                            "pd": "28"
+                        },
+                        {
+                            "staff": "ТП Дилшод",
+                            "p": "69",
+                            "pd": "18"
+                        }
+                    ]
+                },
+            ),
+            OpenApiExample(
+                "Missing Parameters",
+                value={
+                    "status": "error",
+                    "message": "date_from and date_to are required. Example: 01.03.2026"
+                },
+            ),
+        ],
+    )
+    def get(self, request):
+        date_from = request.query_params.get("date_from")
+        date_to = request.query_params.get("date_to")
+
+        if not date_from or not date_to:
+            return Response(
+                {
+                    "status": "error",
+                    "message": "date_from and date_to are required. Example: 01.03.2026",
+                },
+                status=400,
+            )
+
+        try:
+            service = SmartupService()
+
+            result = service.get_route_analysis_report_data(
+                date_from=date_from,
+                date_to=date_to,
+            )
+    
+            return Response(result)
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": "error",
+                    "error_type": e.__class__.__name__,
+                    "message": str(e),
+                },
+                status=500,
+            )
+
 
 class TrustbankUsdRateAPIView(APIView):
     def get(self, request):

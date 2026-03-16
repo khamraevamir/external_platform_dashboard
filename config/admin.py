@@ -1,8 +1,7 @@
 from django.urls import path
 from unfold.sites import UnfoldAdminSite
 
-from integrations.admin_views import sales_summary_view, revenue_view
-
+from integrations.admin_views import sales_summary_view, revenue_view, attendance_view
 
 class CustomAdminSite(UnfoldAdminSite):
     site_header = "Admin"
@@ -14,6 +13,9 @@ class CustomAdminSite(UnfoldAdminSite):
 
     def revenue(self, request):
         return revenue_view(request, self)
+
+    def attendance(self, request):
+        return attendance_view(request, self)
 
     def get_urls(self):
         urls = super().get_urls()
@@ -29,6 +31,11 @@ class CustomAdminSite(UnfoldAdminSite):
                 self.admin_view(self.revenue),
                 name="revenue",
             ),
+            # path(
+            #     "attendance/",
+            #     self.admin_view(self.attendance),
+            #     name="attendance",
+            # ),
         ]
 
         return custom_urls + urls

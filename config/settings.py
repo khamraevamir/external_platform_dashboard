@@ -163,7 +163,7 @@ UNFOLD = {
                 # "separator": True,
                 "items": [
                  {
-                        "title": "Сводка продаж",
+                        "title": "Продажа",
                         "icon": "bar_chart",
                         "link": reverse_lazy("admin:sales-summary"),
                     },
@@ -172,6 +172,11 @@ UNFOLD = {
                         "icon": "payments",
                         "link": reverse_lazy("admin:revenue"),
                     },
+                    # {
+                    #     "title": "Посещаемость",
+                    #     "icon": "analytics",
+                    #     "link": reverse_lazy("admin:attendance"),
+                    # },
                 ],
             },
             

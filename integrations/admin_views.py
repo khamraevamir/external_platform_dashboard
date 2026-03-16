@@ -151,7 +151,7 @@ def sales_summary_view(request, admin_site):
 
     context = {
         **admin_site.each_context(request),
-        "title": "Сводка продаж",
+        "title": "Продажа",
         "data": data,
         "rates": rates,
         "error": error,
@@ -242,5 +242,119 @@ def revenue_view(request, admin_site):
     return TemplateResponse(
         request,
         "admin/revenue.html",
+        context,
+    )
+
+
+def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
+        context = self._get_session_context()
+
+        params = {
+            "rt": "html",
+            "url": "/trade/rep/route_analysis:run_redirect",
+            "begin_date": date_from,
+            "end_date": date_to,
+            "person_group_id": "",
+            "person_kind": "",
+            "report_state": "A",
+            "show_mml": "Y",
+            "mml_type": "P",
+            "show_mml_to_sku": "N",
+            "-project_code": context["project_code"],
+            "-project_hash": context["project_hash"],
+            "-filial_id": context["filial_id"],
+            "-user_id": context["user_id"],
+            "-lang_code": context["lang_code"],
+        }
+        print("ROUTE ANALYSIS PARAMS:", params)
+        html = self.client.get(ROUTE_ANALYSIS_REPORT_PATH, params=params)
+
+        return {
+            "date_from": date_from,
+            "date_to": date_to,
+            "html": html,
+        }
+
+def get_route_analysis_report_data(self, date_from: str, date_to: str) -> dict:
+    report = self.get_route_analysis_report(
+        date_from=date_from,
+        date_to=date_to,
+    )
+
+    parsed = RouteAnalysisParser.parse(report["html"])
+
+    return {
+        "date_from": report["date_from"],
+        "date_to": report["date_to"],
+        "title": parsed["title"],
+        "rows": parsed["rows"],
+    }    
+
+
+def attendance_view(request, admin_site):
+    date_from_input = request.GET.get("date_from", "")
+    date_to_input = request.GET.get("date_to", "")
+
+    data = None
+    error = None
+
+    service = SmartupService()
+
+    try:
+        if date_from_input and date_to_input:
+            date_from = datetime.strptime(
+                date_from_input,
+                "%Y-%m-%d"
+            ).strftime("%d.%m.%Y")
+
+            date_to = datetime.strptime(
+                date_to_input,
+                "%Y-%m-%d"
+            ).strftime("%d.%m.%Y")
+        else:
+            today = datetime.today()
+            first_day = today.replace(day=1)
+
+            last_day_num = calendar.monthrange(
+                today.year,
+                today.month
+            )[1]
+            last_day = today.replace(day=last_day_num)
+
+            date_from_input = first_day.strftime("%Y-%m-%d")
+            date_to_input = last_day.strftime("%Y-%m-%d")
+
+            date_from = first_day.strftime("%d.%m.%Y")
+            date_to = last_day.strftime("%d.%m.%Y")
+
+        raw_data = service.get_route_analysis_report_data(
+            date_from=date_from,
+            date_to=date_to,
+        )
+
+        summary = build_visit_summary(raw_data.get("rows", []))
+
+        data = {
+            "title": raw_data.get("title") or "Посещаемость",
+            "columns": ["Штат", "P", "PD", "Итого"],
+            "rows": summary["rows"],
+            "totals": summary["totals"],
+        }
+
+    except Exception as e:
+        error = str(e)
+
+    context = {
+        **admin_site.each_context(request),
+        "title": "Посещаемость",
+        "data": data,
+        "error": error,
+        "date_from_input": date_from_input,
+        "date_to_input": date_to_input,
+    }
+
+    return TemplateResponse(
+        request,
+        "admin/attendance.html",
         context,
     )

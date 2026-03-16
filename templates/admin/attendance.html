@@ -1,0 +1,158 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+
+
+
+    {% if error %}
+    <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <div class="mb-6">
+        <form method="get" class="flex flex-wrap items-end gap-4">
+    
+            <!-- DATE FROM -->
+            <div class="flex flex-col">
+                <label class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    Дата с
+                </label>
+    
+                <input
+                    type="date"
+                    name="date_from"
+                    value="{{ date_from_input }}"
+                    class="h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm
+                           
+                           focus:border-primary-500
+                           focus:ring-2 focus:ring-primary-500/20"
+                >
+            </div>
+    
+    
+            <!-- DATE TO -->
+            <div class="flex flex-col">
+                <label class="mb-1 text-xs font-medium uppercase tracking-wide text-gray-500">
+                    Дата по
+                </label>
+    
+                <input
+                    type="date"
+                    name="date_to"
+                    value="{{ date_to_input }}"
+                    class="h-10 rounded-xl border border-gray-300 bg-white px-3 text-sm
+                           focus:border-primary-500
+                           focus:ring-2 focus:ring-primary-500/20"
+                >
+            </div>
+    
+    
+            <!-- APPLY -->
+            <div class="flex flex-col justify-end">
+                <button
+                    type="submit"
+                    class="h-10 rounded-xl bg-primary-600 px-5 text-sm font-medium text-white
+                        transition hover:bg-primary-700"
+                >
+                    Применить
+                </button>
+            </div>
+    
+    
+            <!-- RESET -->
+            <div class="flex flex-col justify-end">
+                <a
+                    href="?"
+                    class="inline-flex h-10 items-center rounded-xl border border-gray-300
+                           bg-white px-5 text-sm font-medium text-gray-700
+                           transition hover:bg-gray-50"
+                >
+                    Сброс
+                </a>
+            </div>
+    
+        </form>
+    </div>
+
+    {% if data and data.rows %}
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="border-b border-gray-200 px-5 py-4 sm:px-6">
+            <h2 class="text-sm font-semibold text-gray-900">
+                {{ data.title|default:"Результаты" }}
+            </h2>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50/80">
+                    <tr>
+                        <th class="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Штат
+                        </th>
+                        <th class="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            P
+                        </th>
+                        <th class="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            PD
+                        </th>
+                        <th class="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">
+                            Итого
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    {% for row in data.rows %}
+                    <tr class="transition hover:bg-gray-50/70">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {{ row.staff }}
+                        </td>
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 whitespace-nowrap tabular-nums">
+                            {{ row.p }}
+                        </td>
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 whitespace-nowrap tabular-nums">
+                            {{ row.pd }}
+                        </td>
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 whitespace-nowrap tabular-nums">
+                            {{ row.total }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+                <tfoot class="bg-gray-50/80">
+                    <tr>
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">
+                            {{ data.totals.staff }}
+                        </td>
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 tabular-nums">
+                            {{ data.totals.p }}
+                        </td>
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 tabular-nums">
+                            {{ data.totals.pd }}
+                        </td>
+                        <td class="px-6 py-4 text-right text-sm font-semibold text-gray-900 tabular-nums">
+                            {{ data.totals.total }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center shadow-sm">
+        <div class="mx-auto max-w-md">
+            <h3 class="text-sm font-semibold text-gray-900">
+                Нет данных для отображения
+            </h3>
+            <p class="mt-2 text-sm text-gray-500">
+                Выберите диапазон дат и примените фильтр, чтобы увидеть отчет посещаемости.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

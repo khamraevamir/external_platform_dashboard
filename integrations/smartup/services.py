@@ -6,6 +6,7 @@ from .parsers.payment_report_parser import PaymentReportParser
 
 SALES_SUMMARY_TEMPLATE_ID = "151426"
 PAYMENT_REPORT_PATH = "/anor/rep/mkcs/payment:run"
+ROUTE_ANALYSIS_REPORT_PATH = "/trade/rep/route_analysis:run"
 
 DEFAULT_STATUS_IDS = ["A", "B#V", "B#S", "B#W", "B#E", "B#N"]
 DEFAULT_INVENTORY_KIND_IDS = ["G"]
@@ -254,6 +255,7 @@ class SmartupService:
             "date_to": date_to,
             "html": html,
         }
+
     def get_payment_report_data(self, date_from: str, date_to: str) -> dict:
         report = self.get_payment_report(
             date_from=date_from,
@@ -269,4 +271,48 @@ class SmartupService:
             "columns": parsed["columns"],
             "rows": parsed["rows"],
             "totals": parsed["totals"],
+        }
+
+    def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
+        context = self._get_session_context()
+
+        params = {
+            "rt": "html",
+            "url": "/trade/rep/route_analysis:run_redirect",
+            "begin_date": date_from,
+            "end_date": date_to,
+            "person_group_id": "",
+            "person_kind": "",
+            "report_state": "A",
+            "show_mml": "Y",
+            "mml_type": "P",
+            "show_mml_to_sku": "N",
+            "-project_code": context["project_code"],
+            "-project_hash": str(context["project_hash"]).zfill(2),
+            "-filial_id": context["filial_id"],
+            "-user_id": context["user_id"],
+            "-lang_code": context["lang_code"],
+        }
+
+        html = self.client.get(ROUTE_ANALYSIS_REPORT_PATH, params=params)
+
+        return {
+            "date_from": date_from,
+            "date_to": date_to,
+            "html": html,
+        }
+
+    def get_route_analysis_report_data(self, date_from: str, date_to: str) -> dict:
+        report = self.get_route_analysis_report(
+            date_from=date_from,
+            date_to=date_to,
+        )
+
+        parsed = RouteAnalysisParser.parse(report["html"])
+
+        return {
+            "date_from": report["date_from"],
+            "date_to": report["date_to"],
+            "title": parsed["title"],
+            "rows": parsed["rows"],
         }

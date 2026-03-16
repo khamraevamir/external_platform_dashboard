@@ -71,40 +71,36 @@
     {% if data %}
 
 
-        <div class="overflow-x-auto">
-            <table class="min-w-[350px] w-full border-spacing-0 border-separate">
+        <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+            <table class="w-full border-separate" style="border-spacing: 0">
                 <thead>
                     <tr>
-                        <th class="p-3 text-left text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
-                            {{ data.columns.0 }}
-                        </th>
-                        <th class="p-3 text-right text-sm font-semibold text-gray-700 bg-gray-50 border-b border-gray-200">
-                            Итог в USD
-                        </th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">{{ data.columns.0 }}</th>
+                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">Итог в USD</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for row in data.rows %}
                     <tr class="even:bg-gray-50 hover:bg-primary-50 transition-colors">
-                        <td class="p-3 text-gray-900">
+                        <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
                             {{ row.sales_manager }}
                         </td>
-                        <td class="p-3 text-right font-medium text-gray-900 tabular-nums">
+                        <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
                             {{ row.converted_total_usd }}
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="2" class="p-6 text-center text-gray-400 text-sm">Нет данных для отображения за выбранный период.</td>
+                        <td colspan="4" class="px-6 py-6 text-center text-gray-400 text-sm">Нет данных для отображения за выбранный период.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
-                    <tr class="bg-gray-100">
-                        <td class="p-3 font-bold text-gray-900">
-                            {{ data.totals.sales_manager }}
+                    <tr class="bg-gray-100 font-bold">
+                        <td class="px-4 py-3 text-gray-900">
+                            Итого
                         </td>
-                        <td class="p-3 text-right font-bold text-gray-900 tabular-nums">
+                        <td class="px-4 py-3 text-gray-900">
                             {{ data.totals.converted_total_usd }}
                         </td>
                     </tr>
@@ -112,17 +108,8 @@
             </table>
         </div>
 
-        <!-- {% if rates %}
-        <div class="mt-10 flex flex-col items-center">
 
-            <div class="mt-2 flex flex-wrap justify-center gap-6 text-sm text-gray-700 text-center">
-                <span><b>Покупка:</b> {{ rates.buy }}</span>
-                <span><b>Продажа:</b> {{ rates.sell }}</span>
-                <span><b>Курс ЦБ:</b> {{ rates.cb_rate }}</span>
-                <span><b>Обновлено:</b> {{ rates.updated_at }}</span>
-            </div>
-        </div>
-        {% endif %} -->
+     
     {% endif %}
   
 </div>
