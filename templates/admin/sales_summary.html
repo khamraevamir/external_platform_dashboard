@@ -1,7 +1,13 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-<div class="mx-auto max-w-[1600px] px-6 py-6">
+<div class="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+
+    {% if error %}
+    <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        {{ error }}
+    </div>
+    {% endif %}
 
     <div class="mb-6">
         <form method="get" class="flex flex-wrap items-end gap-4">
@@ -68,51 +74,58 @@
         </form>
     </div>
 
-    {% if data %}
 
+    {% if data and data.rows %}
 
-        <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-            <table class="w-full border-separate" style="border-spacing: 0">
-                <thead>
-                    <tr>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">{{ data.columns.0 }}</th>
-                        <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">Итог в USD</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in data.rows %}
-                    <tr class="even:bg-gray-50 hover:bg-primary-50 transition-colors">
-                        <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
-                            {{ row.sales_manager }}
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
-                            {{ row.converted_total_usd }}
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="px-6 py-6 text-center text-gray-400 text-sm">Нет данных для отображения за выбранный период.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr class="bg-gray-100 font-bold">
-                        <td class="px-4 py-3 text-gray-900">
-                            Итого
-                        </td>
-                        <td class="px-4 py-3 text-gray-900">
-                            {{ data.totals.converted_total_usd }}
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+    <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+        <table class="w-full border-separate" style="border-spacing: 0">
+            <thead>
+                <tr>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
+                        {{ data.columns.0 }}
+                    </th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
+                        Итог в USD
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data.rows %}
+                <tr class="even:bg-gray-50 hover:bg-primary-50 transition-colors">
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
+                        {{ row.sales_manager }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
+                        {{ row.converted_total_usd }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="bg-gray-100 font-bold">
+                    <td class="px-4 py-3 text-gray-900">
+                        {{ data.totals.columns_0|default:"Итого" }}
+                    </td>
+                    <td class="px-4 py-3 text-gray-900">
+                        {{ data.totals.converted_total_usd }}
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    {% else %}
+    <div class="rounded-2xl border border-dashed border-gray-300 bg-white px-6 py-14 text-center shadow-sm">
+        <div class="mx-auto max-w-md">
+            <h3 class="text-sm font-semibold text-gray-900">
+                Нет данных для отображения
+            </h3>
+            <p class="mt-2 text-sm text-gray-500">
+                Выберите диапазон дат и примените фильтр, чтобы увидеть отчет по выручке.
+            </p>
         </div>
-
-
-     
+    </div>
     {% endif %}
-  
+
 </div>
-
-
 {% endblock %}
