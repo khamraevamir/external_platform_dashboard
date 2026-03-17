@@ -5,6 +5,7 @@ from decimal import Decimal, InvalidOperation
 from django.template.response import TemplateResponse
 
 from integrations.smartup.services import SmartupService
+from integrations.smartup.parsers.route_analysis_parser import RouteAnalysisParser
 
 
 def to_decimal(value):

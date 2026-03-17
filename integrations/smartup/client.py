@@ -18,6 +18,12 @@ class SmartupClient:
             "Content-Type": "application/json;charset=UTF-8",
         })
 
+        self.session.cookies.set(
+            "biruni_device_id",
+            "E6DA26AB0A4ED1F795A5C25DC9B41752B231085C17E94DB75AC3B3FB5DC478C4; AMP_MKTG_8db086350f=JTdCJTdE; AMP_8db086350f=JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjIzNmZlYTNiNy1mYjgwLTRjN2MtYTkxMC0yZmQyY2MxMmE2NTMlMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjJ1c2VyXzE3ODI1NDc3JTIyJTJDJTIyc2Vzc2lvbklkJTIyJTNBMTc3MzcwMDI0ODg0MSUyQyUyMm9wdE91dCUyMiUzQWZhbHNlJTJDJTIybGFzdEV2ZW50VGltZSUyMiUzQTE3NzM3MDAyNDkwOTclMkMlMjJsYXN0RXZlbnRJZCUyMiUzQTQwOCUyQyUyMnBhZ2VDb3VudGVyJTIyJTNBMSU3RA==; JSESSIONID=sx_app1~D998028B6E2F025A98202E68622F86A5; _lrt=1773704560030",
+            domain="smartup.online",
+        )
+
     def post(self, endpoint: str, json_data=None):
         url = f"{self.base_url}{endpoint}"
         response = self.session.post(url, json=json_data, timeout=self.DEFAULT_TIMEOUT)
