@@ -39,9 +39,12 @@ class SmartupService:
 
         project_code = settings_data.get("init_project") or first_project.get("code")
         filial_id = settings_data.get("init_filial")
+        if not filial_id and raw_filials:
+            filial_id = raw_filials[0][0]
+
         user_id = user_data.get("user_id")
         lang_code = data.get("lang_code", "ru")
-        project_hash = first_project.get("hash")
+        project_hash = str(first_project.get("hash") or "").zfill(2)
 
         if not project_code:
             raise ValueError("Project code not found in Smartup session data")

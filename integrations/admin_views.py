@@ -148,7 +148,7 @@ def sales_summary_view(request, admin_site):
 
                     row["converted_total_usd"] = format_decimal(converted_total_usd, 2)
 
-                    short_name = GoogleSheetsService().normalize_short_name(
+                    short_name = sheets_service.normalize_short_name(
                         row.get("sales_manager")
                     )
                     plan_value = sales_plan_map.get(short_name, 0)
@@ -289,9 +289,81 @@ def revenue_view(request, admin_site):
             sell_rate=sell_rate,
         )
 
+        sheets_service = GoogleSheetsService()
+        revenue_plan_map = sheets_service.get_revenue_plan_map()
+
+        total_plan = Decimal("0")
+        total_fact = Decimal("0")
+
+        for row in summary["rows"]:
+
+            short_name = sheets_service.normalize_short_name(
+                row.get("collector")
+            )
+
+            plan_value = revenue_plan_map.get(short_name, 0)
+
+            plan_decimal = to_decimal(plan_value)
+            fact_decimal = to_decimal(row.get("total_usd"))
+
+            percent = Decimal("0")
+
+            if plan_decimal > 0:
+                percent = (fact_decimal / plan_decimal) * Decimal("100")
+
+            row["plan"] = format_decimal(plan_decimal, 0)
+
+            if plan_decimal > 0:
+                row["progress_percent"] = format_percent(percent, 0)
+
+                clamped = max(0, min(100, int(percent)))
+
+                row["progress_percent_clamped"] = clamped
+                row["progress_color"] = progress_color_from_percent(clamped)
+                row["percent"] = int(percent)
+
+            else:
+                row["progress_percent"] = "—"
+                row["progress_percent_clamped"] = 0
+                row["progress_color"] = "red"
+                row["percent"] = 0
+
+            total_plan += plan_decimal
+            total_fact += fact_decimal
+
+        total_percent = Decimal("0")
+
+        if total_plan > 0:
+            total_percent = (total_fact / total_plan) * Decimal("100")
+
+        summary["totals"]["plan"] = format_decimal(total_plan, 0)
+
+        if total_plan > 0:
+            summary["totals"]["progress_percent"] = format_percent(total_percent, 0)
+
+            totals_clamped = max(0, min(100, int(total_percent)))
+
+            summary["totals"]["progress_percent_clamped"] = totals_clamped
+            summary["totals"]["progress_color"] = progress_color_from_percent(
+                totals_clamped
+            )
+
+            summary["totals"]["percent"] = int(total_percent)
+
+        else:
+            summary["totals"]["progress_percent"] = "—"
+            summary["totals"]["progress_percent_clamped"] = 0
+            summary["totals"]["progress_color"] = "red"
+            summary["totals"]["percent"] = 0
+
         data = {
             "title": raw_data.get("title"),
-            "columns": ["Инкассатор", "Итог в USD"],
+            "columns": [
+                "Инкассатор",
+                "План",
+                "Итог в USD",
+                "Прогресс",
+            ],
             "rows": summary["rows"],
             "totals": summary["totals"],
         }
@@ -314,7 +386,6 @@ def revenue_view(request, admin_site):
         "admin/revenue.html",
         context,
     )
-
 
 def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
         context = self._get_session_context()

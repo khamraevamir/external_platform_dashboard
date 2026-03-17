@@ -304,3 +304,6 @@ class GoogleSheetsService:
 
     def get_sales_plan_map(self):
         return self.get_metric_plan_map("Савдо")
+
+    def get_revenue_plan_map(self):
+        return self.get_metric_plan_map("Выручка")
