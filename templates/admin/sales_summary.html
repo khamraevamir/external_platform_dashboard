@@ -78,14 +78,20 @@
     {% if data and data.rows %}
 
     <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
-        <table class="w-full border-separate" style="border-spacing: 0">
+        <table class="w-full min-w-[760px] border-separate" style="border-spacing: 0">
             <thead>
                 <tr>
                     <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
                         {{ data.columns.0 }}
                     </th>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
-                        Итог в USD
+                    <th class="py-3 px-4 text-right text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
+                        План
+                    </th>
+                    <th class="py-3 px-4 text-right text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
+                        Факт
+                    </th>
+                    <th class="py-3 px-4 text-right text-sm font-semibold text-gray-500 bg-white border-b border-gray-200">
+                        Прогресс
                     </th>
                 </tr>
             </thead>
@@ -95,8 +101,25 @@
                     <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
                         {{ row.sales_manager }}
                     </td>
-                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900">
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900 text-right tabular-nums">
+                        {{ row.plan }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900 text-right tabular-nums">
                         {{ row.converted_total_usd }}
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap border-b border-gray-100 text-sm text-gray-900 text-right">
+                        <div class="flex items-center justify-end gap-3">
+                            <span class="inline-block font-semibold rounded-default text-[11px] uppercase whitespace-nowrap h-6 leading-6 px-2 {% if row.progress_color == 'green' %}bg-green-100 text-green-700{% elif row.progress_color == 'orange' %}bg-orange-100 text-orange-700{% else %}bg-red-100 text-red-700{% endif %}">
+                                {% if row.progress_percent == "—" %}
+                                    0%
+                                {% else %}
+                                    {{ row.progress_percent }}%
+                                {% endif %}
+                            </span>
+                            <div class="h-2 w-28 overflow-hidden rounded-default bg-gray-100">
+                                <div class="h-full rounded-default {% if row.progress_color == 'green' %}bg-green-500{% elif row.progress_color == 'orange' %}bg-orange-500{% else %}bg-red-500{% endif %} {% if row.progress_percent_clamped >= 100 %}w-full{% elif row.progress_percent_clamped >= 75 %}w-3/4{% elif row.progress_percent_clamped >= 50 %}w-1/2{% elif row.progress_percent_clamped >= 25 %}w-1/4{% else %}w-0{% endif %}"></div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
@@ -104,10 +127,27 @@
             <tfoot>
                 <tr class="bg-gray-100 font-bold">
                     <td class="px-4 py-3 text-gray-900">
-                        {{ data.totals.columns_0|default:"Итого" }}
+                        {{ data.totals.sales_manager }}
                     </td>
-                    <td class="px-4 py-3 text-gray-900">
+                    <td class="px-4 py-3 text-gray-900 text-right tabular-nums">
+                        {{ data.totals.plan }}
+                    </td>
+                    <td class="px-4 py-3 text-gray-900 text-right tabular-nums">
                         {{ data.totals.converted_total_usd }}
+                    </td>
+                    <td class="px-4 py-3 text-gray-900 text-right">
+                        <div class="flex items-center justify-end gap-3">
+                            <span class="inline-block font-semibold rounded-default text-[11px] uppercase whitespace-nowrap h-6 leading-6 px-2 {% if data.totals.progress_color == 'green' %}bg-green-100 text-green-700{% elif data.totals.progress_color == 'orange' %}bg-orange-100 text-orange-700{% else %}bg-red-100 text-red-700{% endif %}">
+                                {% if data.totals.progress_percent == "—" %}
+                                    0%
+                                {% else %}
+                                    {{ data.totals.progress_percent }}%
+                                {% endif %}
+                            </span>
+                            <div class="h-2 w-28 overflow-hidden rounded-default bg-gray-200/70">
+                                <div class="h-full rounded-default {% if data.totals.progress_color == 'green' %}bg-green-600{% elif data.totals.progress_color == 'orange' %}bg-orange-600{% else %}bg-red-600{% endif %} {% if data.totals.progress_percent_clamped >= 100 %}w-full{% elif data.totals.progress_percent_clamped >= 75 %}w-3/4{% elif data.totals.progress_percent_clamped >= 50 %}w-1/2{% elif data.totals.progress_percent_clamped >= 25 %}w-1/4{% else %}w-0{% endif %}"></div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </tfoot>

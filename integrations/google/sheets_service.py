@@ -22,6 +22,7 @@ class GoogleSheetsService:
     COL_POSITION = 1  # B
     COL_CRITERIA = 2  # C
     COL_FACT = 4      # E
+    COL_PLAN = 3      # D
 
     HEADER_ROW = 2  # строка с заголовками "План" / "Факт" (1-based)
 
@@ -273,3 +274,33 @@ class GoogleSheetsService:
             sheet.batch_update(batch_updates)
 
         return results
+
+
+
+    def get_metric_plan_map(self, criteria_name):
+        sheet = self.get_current_month_sheet()
+        values = sheet.get_all_values()
+
+        target_criteria = self.normalize(criteria_name)
+        result = {}
+
+        current_employee_short_name = None
+
+        for row_values in values:
+            fio = row_values[self.COL_FIO] if len(row_values) > self.COL_FIO else ""
+            criteria = row_values[self.COL_CRITERIA] if len(row_values) > self.COL_CRITERIA else ""
+            plan_value = row_values[self.COL_PLAN] if len(row_values) > self.COL_PLAN else ""
+
+            if self.normalize(fio):
+                current_employee_short_name = self.normalize_short_name(fio)
+
+            if not current_employee_short_name:
+                continue
+
+            if self.normalize(criteria) == target_criteria:
+                result[current_employee_short_name] = parse_number(plan_value)
+
+        return result
+
+    def get_sales_plan_map(self):
+        return self.get_metric_plan_map("Савдо")

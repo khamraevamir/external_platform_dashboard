@@ -6,6 +6,7 @@ from django.template.response import TemplateResponse
 
 from integrations.smartup.services import SmartupService
 from integrations.smartup.parsers.route_analysis_parser import RouteAnalysisParser
+from integrations.google.sheets_service import GoogleSheetsService
 
 
 def to_decimal(value):
@@ -22,6 +23,20 @@ def to_decimal(value):
 def format_decimal(value, places=2):
     quant = Decimal("1") if places == 0 else Decimal("1." + ("0" * places))
     return f"{value.quantize(quant):,}".replace(",", " ")
+
+
+def format_percent(value, places=0):
+    value = Decimal(value)
+    quant = Decimal("1") if places == 0 else Decimal("1." + ("0" * places))
+    return f"{value.quantize(quant)}"
+
+
+def progress_color_from_percent(percent_int: int) -> str:
+    if percent_int >= 81:
+        return "green"
+    if percent_int >= 71:
+        return "orange"
+    return "red"
 
 
 def build_revenue_summary(rows, sell_rate):
@@ -114,6 +129,8 @@ def sales_summary_view(request, admin_site):
             date_from=date_from,
             date_to=date_to,
         )
+        sheets_service = GoogleSheetsService()
+        sales_plan_map = sheets_service.get_sales_plan_map()
 
         try:
             rates = service.get_trustbank_usd_rate()
@@ -131,21 +148,73 @@ def sales_summary_view(request, admin_site):
 
                     row["converted_total_usd"] = format_decimal(converted_total_usd, 2)
 
+                    short_name = GoogleSheetsService().normalize_short_name(
+                        row.get("sales_manager")
+                    )
+                    plan_value = sales_plan_map.get(short_name, 0)
+                    plan_decimal = to_decimal(plan_value)
+                    row["plan"] = format_decimal(plan_decimal, 0)
+
+                    if plan_decimal > 0:
+                        progress_percent = (converted_total_usd / plan_decimal) * Decimal("100")
+                        row["progress_percent"] = format_percent(progress_percent, 0)
+                        clamped = max(0, min(100, int(progress_percent)))
+                        row["progress_percent_clamped"] = clamped
+                        row["progress_color"] = progress_color_from_percent(clamped)
+                        row["percent"] = int(progress_percent)
+                    else:
+                        row["progress_percent"] = "—"
+                        row["progress_percent_clamped"] = 0
+                        row["progress_color"] = "red"
+                        row["percent"] = 0
+
+                total_plan = sum(sales_plan_map.get(
+                    sheets_service.normalize_short_name(row.get("sales_manager")), 0
+                ) for row in data.get("rows", []))
+
+                total_plan_decimal = to_decimal(total_plan)
+                data["totals"]["plan"] = format_decimal(total_plan_decimal, 0)
+
                 total_usd = to_decimal(data.get("totals", {}).get("usd"))
                 total_uzs = to_decimal(data.get("totals", {}).get("uzs"))
                 converted_grand_total = total_usd + (total_uzs / sell_rate)
 
                 data["totals"]["converted_total_usd"] = format_decimal(converted_grand_total, 2)
+
+                if total_plan_decimal > 0:
+                    totals_progress_percent = (converted_grand_total / total_plan_decimal) * Decimal("100")
+                    data["totals"]["progress_percent"] = format_percent(totals_progress_percent, 0)
+                    totals_clamped = max(0, min(100, int(totals_progress_percent)))
+                    data["totals"]["progress_percent_clamped"] = totals_clamped
+                    data["totals"]["progress_color"] = progress_color_from_percent(totals_clamped)
+                else:
+                    data["totals"]["progress_percent"] = "—"
+                    data["totals"]["progress_percent_clamped"] = 0
+                    data["totals"]["progress_color"] = "red"
             else:
                 for row in data.get("rows", []):
                     row["converted_total_usd"] = "—"
+                    row["progress_percent"] = "—"
+                    row["progress_percent_clamped"] = 0
+                    row["progress_color"] = "red"
+                    row["percent"] = 0
                 if data and "totals" in data:
                     data["totals"]["converted_total_usd"] = "—"
+                    data["totals"]["progress_percent"] = "—"
+                    data["totals"]["progress_percent_clamped"] = 0
+                    data["totals"]["progress_color"] = "red"
         else:
             for row in data.get("rows", []):
                 row["converted_total_usd"] = "—"
+                row["progress_percent"] = "—"
+                row["progress_percent_clamped"] = 0
+                row["progress_color"] = "red"
+                row["percent"] = 0
             if data and "totals" in data:
                 data["totals"]["converted_total_usd"] = "—"
+                data["totals"]["progress_percent"] = "—"
+                data["totals"]["progress_percent_clamped"] = 0
+                data["totals"]["progress_color"] = "red"
 
     except Exception as e:
         error = str(e)
