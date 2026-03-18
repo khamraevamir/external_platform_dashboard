@@ -78,7 +78,97 @@
 
     {% if data and data.rows %}
 
-    <div class="overflow-x-auto bg-white rounded-lg border border-gray-200 shadow-sm">
+    <div class="lg:hidden">
+        {% for row in data.rows %}
+        <article class="mb-3 overflow-hidden rounded-default border border-gray-200/80 bg-white shadow-[0_12px_30px_rgba(15,23,42,0.06)]">
+            <div class="border-b border-gray-100 bg-gradient-to-b from-gray-50 to-white px-5 py-4">
+                <h3 class="mt-1 text-base font-semibold leading-6 text-gray-900">
+                    {{ row.collector }}
+                </h3>
+            </div>
+
+            <div class="divide-y divide-gray-100">
+              
+
+                <div class="flex items-center justify-between gap-4 px-5 py-4">
+                    <div class="text-sm font-semibold text-gray-900">План</div>
+                    <div class="text-sm text-right font-semibold text-gray-700 tabular-nums">
+                        {{ row.plan }}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between gap-4 px-5 py-4">
+                    <div class="text-sm font-semibold text-gray-900">Итог в USD</div>
+                    <div class="text-sm text-right font-semibold text-gray-700 tabular-nums">
+                        {{ row.total_usd }}
+                    </div>
+                </div>
+
+                <div class="px-5 py-4">
+                    <div class="mb-3 flex items-center justify-between gap-4">
+                        <div class="text-sm font-semibold text-gray-900">Прогресс</div>
+                        <div class="text-sm font-semibold {% if row.progress_color == 'green' %}text-green-700{% elif row.progress_color == 'orange' %}text-orange-700{% else %}text-red-700{% endif %}">
+                            {% if row.progress_percent == "—" %}
+                                0%
+                            {% else %}
+                                {{ row.progress_percent }}%
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="h-2.5 overflow-hidden rounded-full bg-gray-100">
+                        <div
+                            class="h-full rounded-full {% if row.progress_color == 'green' %}bg-green-500{% elif row.progress_color == 'orange' %}bg-orange-500{% else %}bg-red-500{% endif %}"
+                        ></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+
+        <article class="overflow-hidden rounded-default border border-gray-200/80 bg-gray-50 shadow-[0_12px_30px_rgba(15,23,42,0.06)]">
+            <div class="border-b border-gray-200/80 bg-gradient-to-b from-white to-gray-50 px-5 py-4">
+                <div class="text-base font-bold text-gray-900">
+                    {{ data.totals.collector }}
+                </div>
+            </div>
+
+            <div class="divide-y divide-gray-200/80">
+                <div class="flex items-center justify-between gap-4 px-5 py-4">
+                    <div class="text-sm font-semibold text-gray-900">План</div>
+                    <div class="text-sm text-right font-semibold text-gray-700 tabular-nums">
+                        {{ data.totals.plan }}
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between gap-4 px-5 py-4">
+                    <div class="text-sm font-semibold text-gray-900">Итог в USD</div>
+                    <div class="text-sm text-right font-semibold text-gray-700 tabular-nums">
+                        {{ data.totals.total_usd }}
+                    </div>
+                </div>
+
+                <div class="px-5 py-4">
+                    <div class="mb-3 flex items-center justify-between gap-4">
+                        <div class="text-sm font-semibold text-gray-900">Прогресс</div>
+                        <div class="text-sm font-semibold {% if data.totals.progress_color == 'green' %}text-green-700{% elif data.totals.progress_color == 'orange' %}text-orange-700{% else %}text-red-700{% endif %}">
+                            {% if data.totals.progress_percent == "—" %}
+                                0%
+                            {% else %}
+                                {{ data.totals.progress_percent }}%
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="h-2.5 overflow-hidden rounded-full bg-gray-200/70">
+                        <div
+                            class="h-full rounded-full {% if data.totals.progress_color == 'green' %}bg-green-600{% elif data.totals.progress_color == 'orange' %}bg-orange-600{% else %}bg-red-600{% endif %}"
+                        ></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <div class="hidden overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm lg:block">
         <table class="w-full min-w-[760px] border-separate" style="border-spacing: 0">
             <thead>
                 <tr>
