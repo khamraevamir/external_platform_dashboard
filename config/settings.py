@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from django.templatetags.static import static
 from django.urls import reverse_lazy
 
 
@@ -128,6 +129,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -158,11 +160,26 @@ SPECTACULAR_SETTINGS = {
 UNFOLD = {
     "SITE_TITLE": "Valor",
     "SITE_HEADER": "Valor",
+    "SITE_LOGO": lambda request: static("valor.png"),
+    "STYLES": [
+        lambda request: static("css/unfold-logo.css"),
+    ],
     # "SITE_SYMBOL": "monitoring",
     "SIDEBAR": {
         "show_search": False,
         "show_all_applications": False,
         "navigation": [
+            {
+                "title": "Навигация",
+             
+                "items": [
+                    {
+                        "title": "Главная",
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                ],
+            },
             {
                 "title": "Отчёты",
                 # "separator": True,

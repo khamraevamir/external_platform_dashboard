@@ -307,3 +307,20 @@ class GoogleSheetsService:
 
     def get_revenue_plan_map(self):
         return self.get_metric_plan_map("Выручка")
+
+    def get_position_map(self):
+        sheet = self.get_current_month_sheet()
+        values = sheet.get_all_values()
+
+        position_map = {}
+
+        for row in values:
+            fio = row[self.COL_FIO] if len(row) > self.COL_FIO else ""
+            position = row[self.COL_POSITION] if len(row) > self.COL_POSITION else ""
+
+            short_name = self.normalize_short_name(fio)
+
+            if short_name:
+                position_map[short_name] = position
+
+        return position_map

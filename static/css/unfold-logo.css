@@ -1,0 +1,8 @@
+/* Увеличение логотипа Valor в сайдбаре Unfold (по умолчанию ~32px) */
+img[src*="valor"],
+img[src*="logo.png"] {
+  height: 98px !important;
+  max-height: 98px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
