@@ -24,6 +24,14 @@ class SmartupClient:
             domain="smartup.online",
         )
 
+    def get_session_debug_data(self):
+        data = self.get_session_data()
+
+        return {
+            "session_data": data,
+            "cookies": self.session.cookies.get_dict(),
+        }
+
     def post(self, endpoint: str, json_data=None):
         url = f"{self.base_url}{endpoint}"
         response = self.session.post(url, json=json_data, timeout=self.DEFAULT_TIMEOUT)
@@ -90,3 +98,5 @@ class SmartupClient:
             "updated_at": "updated_at",
             "source": "",
         }
+
+

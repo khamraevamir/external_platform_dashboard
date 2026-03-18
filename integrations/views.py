@@ -388,3 +388,19 @@ class TrustbankUsdRateAPIView(APIView):
                 },
                 status=500,
             )  
+
+
+class GreenwhiteSessionDebugAPIView(APIView):
+    def get(self, request):
+        try:
+            service = SmartupService()
+            return Response(service.get_session_debug_data())
+        except Exception as e:
+            return Response(
+                {
+                    "status": "error",
+                    "error_type": e.__class__.__name__,
+                    "message": str(e),
+                },
+                status=500,
+            )

@@ -298,7 +298,6 @@ class SmartupService:
         }
 
         html = self.client.get(ROUTE_ANALYSIS_REPORT_PATH, params=params)
-
         return {
             "date_from": date_from,
             "date_to": date_to,
@@ -319,3 +318,6 @@ class SmartupService:
             "title": parsed["title"],
             "rows": parsed["rows"],
         }
+
+    def get_session_debug_data(self):
+        return self.client.get_session_debug_data()

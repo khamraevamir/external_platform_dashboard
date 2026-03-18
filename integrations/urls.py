@@ -6,7 +6,7 @@ from .views import (
     GreenwhitePaymentReportDataAPIView,
     TrustbankUsdRateAPIView,
     GreenwhiteRouteAnalysisDataAPIView,
-
+    GreenwhiteSessionDebugAPIView,
 )
 
 urlpatterns = [
@@ -24,5 +24,10 @@ urlpatterns = [
         "currency/trustbank/usd/",
         TrustbankUsdRateAPIView.as_view(),
         name="trustbank-usd-rate",
+    ),
+    path(
+        "greenwhite/session-debug/",
+        GreenwhiteSessionDebugAPIView.as_view(),
+        name="greenwhite-session-debug",
     ),
 ]

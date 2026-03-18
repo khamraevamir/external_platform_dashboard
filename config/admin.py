@@ -3,8 +3,15 @@ from decimal import Decimal, InvalidOperation
 from django.urls import path
 from unfold.sites import UnfoldAdminSite
 
-from integrations.admin_views import sales_summary_view, revenue_view, attendance_view
-from integrations.google.sheets_service import GoogleSheetsService
+from integrations.admin_views import (
+    attendance_view,
+    get_position_map_cached,
+    get_revenue_context_data,
+    get_sales_summary_context_data,
+    normalize_short_name,
+    revenue_view,
+    sales_summary_view,
+)
 
 
 def _to_decimal_safe(value) -> Decimal:
@@ -32,20 +39,24 @@ class CustomAdminSite(UnfoldAdminSite):
     def index(self, request, extra_context=None):
         extra_context = extra_context or {}
 
-        sales_ctx = {}
-        revenue_ctx = {}
         dashboard_errors = []
 
         try:
-            sales_response = sales_summary_view(request, self)
-            sales_ctx = getattr(sales_response, "context_data", {}) or {}
+            sales_ctx = get_sales_summary_context_data(
+                date_from_input=request.GET.get("date_from", ""),
+                date_to_input=request.GET.get("date_to", ""),
+            )
         except Exception as e:
+            sales_ctx = {}
             dashboard_errors.append(f"Продажа: {e}")
 
         try:
-            revenue_response = revenue_view(request, self)
-            revenue_ctx = getattr(revenue_response, "context_data", {}) or {}
+            revenue_ctx = get_revenue_context_data(
+                date_from_input=request.GET.get("date_from", ""),
+                date_to_input=request.GET.get("date_to", ""),
+            )
         except Exception as e:
+            revenue_ctx = {}
             dashboard_errors.append(f"Выручка: {e}")
 
         sales_data = sales_ctx.get("data") or {}
@@ -54,20 +65,15 @@ class CustomAdminSite(UnfoldAdminSite):
         sales_rows = sales_data.get("rows") or []
         revenue_rows = revenue_data.get("rows") or []
 
-        sheets_service = None
         position_map = {}
 
         try:
-            sheets_service = GoogleSheetsService()
-            position_map = sheets_service.get_position_map()
+            position_map = get_position_map_cached()
         except Exception as e:
             dashboard_errors.append(f"Google Sheet (должности): {e}")
 
         def is_tp(name) -> bool:
-            if not sheets_service:
-                return False
-
-            short_name = sheets_service.normalize_short_name(name)
+            short_name = normalize_short_name(name)
             position = str(position_map.get(short_name, "")).lower().strip()
 
             return "тп" in position or "торгов" in position

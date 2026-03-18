@@ -1,6 +1,7 @@
 import calendar
 import gspread
 from datetime import datetime
+from django.core.cache import cache
 from gspread.exceptions import WorksheetNotFound
 from django.conf import settings
 from google.oauth2.service_account import Credentials
@@ -25,16 +26,25 @@ class GoogleSheetsService:
     COL_PLAN = 3      # D
 
     HEADER_ROW = 2  # строка с заголовками "План" / "Факт" (1-based)
+    SHEET_VALUES_CACHE_TIMEOUT = 900
+    _client = None
+    _spreadsheet = None
 
     def __init__(self):
-        credentials = Credentials.from_service_account_file(
-            settings.GOOGLE_SERVICE_ACCOUNT_FILE,
-            scopes=self.SCOPES,
-        )
-        self.client = gspread.authorize(credentials)
+        if self.__class__._client is None:
+            credentials = Credentials.from_service_account_file(
+                settings.GOOGLE_SERVICE_ACCOUNT_FILE,
+                scopes=self.SCOPES,
+            )
+            self.__class__._client = gspread.authorize(credentials)
+
+        self.client = self.__class__._client
 
     def get_spreadsheet(self):
-        return self.client.open_by_key(settings.GOOGLE_SHEET_ID)
+        if self.__class__._spreadsheet is None:
+            self.__class__._spreadsheet = self.client.open_by_key(settings.GOOGLE_SHEET_ID)
+
+        return self.__class__._spreadsheet
 
     def normalize(self, value):
         return str(value or "").strip().lower()
@@ -57,6 +67,23 @@ class GoogleSheetsService:
         spreadsheet = self.get_spreadsheet()
         sheet_name = self.get_month_sheet_name()
         return spreadsheet.worksheet(sheet_name)
+
+    def get_current_month_values(self):
+        sheet_name = self.get_month_sheet_name()
+        cache_key = f"google-sheets:values:{settings.GOOGLE_SHEET_ID}:{sheet_name}"
+        cached_values = cache.get(cache_key)
+
+        if cached_values is not None:
+            return cached_values
+
+        values = self.get_current_month_sheet().get_all_values()
+        cache.set(cache_key, values, timeout=self.SHEET_VALUES_CACHE_TIMEOUT)
+        return values
+
+    def invalidate_current_month_cache(self):
+        sheet_name = self.get_month_sheet_name()
+        cache_key = f"google-sheets:values:{settings.GOOGLE_SHEET_ID}:{sheet_name}"
+        cache.delete(cache_key)
 
     def to_a1(self, col, row):
         column = ""
@@ -158,10 +185,11 @@ class GoogleSheetsService:
 
         if clear_requests:
             sheet.batch_clear(clear_requests)
+            self.invalidate_current_month_cache()
 
     def update_metric_summary(self, payload, criteria_name):
         sheet = self.get_current_month_sheet()
-        values = sheet.get_all_values()
+        values = self.get_current_month_values()
 
         results = {
             "status": "ok",
@@ -272,14 +300,14 @@ class GoogleSheetsService:
 
         if batch_updates:
             sheet.batch_update(batch_updates)
+            self.invalidate_current_month_cache()
 
         return results
 
 
 
     def get_metric_plan_map(self, criteria_name):
-        sheet = self.get_current_month_sheet()
-        values = sheet.get_all_values()
+        values = self.get_current_month_values()
 
         target_criteria = self.normalize(criteria_name)
         result = {}
@@ -309,8 +337,7 @@ class GoogleSheetsService:
         return self.get_metric_plan_map("Выручка")
 
     def get_position_map(self):
-        sheet = self.get_current_month_sheet()
-        values = sheet.get_all_values()
+        values = self.get_current_month_values()
 
         position_map = {}
 
