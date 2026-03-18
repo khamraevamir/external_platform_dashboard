@@ -481,6 +481,7 @@ def revenue_view(request, admin_site):
         context,
     )
 
+
 def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
         context = self._get_session_context()
 
@@ -510,6 +511,7 @@ def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
             "html": html,
         }
 
+
 def get_route_analysis_report_data(self, date_from: str, date_to: str) -> dict:
     report = self.get_route_analysis_report(
         date_from=date_from,
@@ -523,7 +525,7 @@ def get_route_analysis_report_data(self, date_from: str, date_to: str) -> dict:
         "date_to": report["date_to"],
         "title": parsed["title"],
         "rows": parsed["rows"],
-    }    
+    }
 
 
 def attendance_view(request, admin_site):

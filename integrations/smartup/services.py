@@ -1,8 +1,11 @@
 import json
 
+from django.conf import settings
+
 from .client import SmartupClient
 from .parsers.sales_summary_parser import SalesSummaryParser
 from .parsers.payment_report_parser import PaymentReportParser
+from .parsers.route_analysis_parser import RouteAnalysisParser
 
 SALES_SUMMARY_TEMPLATE_ID = "151426"
 PAYMENT_REPORT_PATH = "/anor/rep/mkcs/payment:run"
@@ -42,7 +45,10 @@ class SmartupService:
         if not filial_id and raw_filials:
             filial_id = raw_filials[0][0]
 
-        user_id = user_data.get("user_id")
+        user_id = (
+            settings.SMARTUP_REPORT_USER_ID
+            or user_data.get("user_id")
+        )
         lang_code = data.get("lang_code", "ru")
         project_hash = str(first_project.get("hash") or "").zfill(2)
 
@@ -181,6 +187,8 @@ class SmartupService:
         status_ids: list[str] | None = None,
         inventory_kind_ids: list[str] | None = None,
     ) -> dict:
+        date_from = str(date_from).strip()
+        date_to = str(date_to).strip()
         context = self._get_session_context()
         params = self._build_sales_summary_params(
             date_from=date_from,
@@ -236,6 +244,8 @@ class SmartupService:
 
 
     def get_payment_report(self, date_from: str, date_to: str) -> dict:
+        date_from = str(date_from).strip()
+        date_to = str(date_to).strip()
         context = self._get_session_context()
 
         params = {
@@ -277,6 +287,8 @@ class SmartupService:
         }
 
     def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
+        date_from = str(date_from).strip()
+        date_to = str(date_to).strip()
         context = self._get_session_context()
 
         params = {

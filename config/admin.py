@@ -5,6 +5,7 @@ from unfold.sites import UnfoldAdminSite
 
 from integrations.admin_views import (
     attendance_view,
+    get_month_sheet_name,
     get_position_map_cached,
     get_revenue_context_data,
     get_sales_summary_context_data,
@@ -38,6 +39,7 @@ class CustomAdminSite(UnfoldAdminSite):
 
     def index(self, request, extra_context=None):
         extra_context = extra_context or {}
+        dashboard_month_label = get_month_sheet_name().replace("_", " ")
 
         dashboard_errors = []
 
@@ -64,6 +66,8 @@ class CustomAdminSite(UnfoldAdminSite):
 
         sales_rows = sales_data.get("rows") or []
         revenue_rows = revenue_data.get("rows") or []
+        sales_totals = sales_data.get("totals") or {}
+        revenue_totals = revenue_data.get("totals") or {}
 
         position_map = {}
 
@@ -113,19 +117,28 @@ class CustomAdminSite(UnfoldAdminSite):
         extra_context.update(
             {
                 "dashboard_sales": {
+                    "overall_totals": {
+                        "plan": sales_totals.get("plan", "0"),
+                        "converted_total_usd": sales_totals.get("converted_total_usd", "0"),
+                    },
                     "rows": sales_rows_tp,
-                    "totals": {
+                    "tp_totals": {
                         "plan": _format_decimal(sales_plan, 0),
                         "converted_total_usd": _format_decimal(sales_fact, 2),
                     },
                 },
                 "dashboard_revenue": {
+                    "overall_totals": {
+                        "plan": revenue_totals.get("plan", "0"),
+                        "total_usd": revenue_totals.get("total_usd", "0"),
+                    },
                     "rows": revenue_rows_tp,
-                    "totals": {
+                    "tp_totals": {
                         "plan": _format_decimal(revenue_plan, 0),
                         "total_usd": _format_decimal(revenue_fact, 2),
                     },
                 },
+                "dashboard_month_label": dashboard_month_label,
                 "dashboard_date_from_input": (
                     sales_ctx.get("date_from_input")
                     or revenue_ctx.get("date_from_input")

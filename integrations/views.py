@@ -277,7 +277,7 @@ class GreenwhiteRouteAnalysisDataAPIView(APIView):
     @extend_schema(
         summary="Smartup Route Analysis Report",
         description="""
-Returns route analysis data from **Smartup ERP** for the selected date range.
+Returns attendance summary from official **Smartup ERP** exports for the selected date range.
 
 This endpoint is used for attendance analytics and extracts:
 - staff
