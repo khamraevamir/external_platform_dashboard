@@ -263,6 +263,7 @@ def get_sales_summary_context_data(date_from_input="", date_to_input=""):
         date_from_input,
         date_to_input,
     )
+    target_month = datetime.strptime(date_from_input, "%Y-%m-%d")
 
     data = None
     rates = None
@@ -272,7 +273,10 @@ def get_sales_summary_context_data(date_from_input="", date_to_input=""):
     try:
         data = deepcopy(_get_sales_summary_report_data_cached(service, date_from, date_to))
         sheets_service = _get_sheets_service()
-        sales_plan_map = _get_sales_plan_map(sheets_service=sheets_service)
+        sales_plan_map = _get_sales_plan_map(
+            sheets_service=sheets_service,
+            date_obj=target_month,
+        )
 
         try:
             rates = _get_trustbank_rate_cached(service)
@@ -375,6 +379,7 @@ def get_revenue_context_data(date_from_input="", date_to_input=""):
         date_from_input,
         date_to_input,
     )
+    target_month = datetime.strptime(date_from_input, "%Y-%m-%d")
 
     data = None
     rates = None
@@ -396,7 +401,10 @@ def get_revenue_context_data(date_from_input="", date_to_input=""):
         )
 
         sheets_service = _get_sheets_service()
-        revenue_plan_map = _get_revenue_plan_map(sheets_service=sheets_service)
+        revenue_plan_map = _get_revenue_plan_map(
+            sheets_service=sheets_service,
+            date_obj=target_month,
+        )
 
         total_plan = Decimal("0")
         total_fact = Decimal("0")
