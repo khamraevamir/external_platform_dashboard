@@ -147,6 +147,25 @@ def _resolve_date_range(date_from_input, date_to_input):
     )
 
 
+def _resolve_month_input(month_input=""):
+    if month_input:
+        target_month = datetime.strptime(month_input, "%Y-%m")
+    else:
+        target_month = datetime.today().replace(day=1)
+        month_input = target_month.strftime("%Y-%m")
+
+    first_day = target_month.replace(day=1)
+    last_day_num = calendar.monthrange(target_month.year, target_month.month)[1]
+    last_day = target_month.replace(day=last_day_num)
+
+    return (
+        month_input,
+        target_month,
+        first_day.strftime("%d.%m.%Y"),
+        last_day.strftime("%d.%m.%Y"),
+    )
+
+
 def _get_sheets_service():
     return GoogleSheetsService()
 
@@ -497,11 +516,18 @@ def revenue_view(request, admin_site):
         context,
     )
 
-def get_attendance_context_data(date_from_input="", date_to_input=""):
-    date_from_input, date_to_input, date_from, date_to = _resolve_date_range(
-        date_from_input,
-        date_to_input,
-    )
+def get_attendance_context_data(month_input="", date_from_input="", date_to_input=""):
+    if date_from_input and date_to_input and not month_input:
+        date_from_input, date_to_input, date_from, date_to = _resolve_date_range(
+            date_from_input,
+            date_to_input,
+        )
+        month_input = datetime.strptime(date_from_input, "%Y-%m-%d").strftime("%Y-%m")
+        target_month = datetime.strptime(date_from_input, "%Y-%m-%d")
+    else:
+        month_input, target_month, date_from, date_to = _resolve_month_input(month_input)
+        date_from_input = datetime.strptime(date_from, "%d.%m.%Y").strftime("%Y-%m-%d")
+        date_to_input = datetime.strptime(date_to, "%d.%m.%Y").strftime("%Y-%m-%d")
 
     data = None
     error = None
@@ -517,6 +543,7 @@ def get_attendance_context_data(date_from_input="", date_to_input=""):
             sheets_service = _get_sheets_service()
             attendance_plan_map = _get_attendance_plan_map(
                 sheets_service=sheets_service,
+                date_obj=target_month,
             )
 
             total_plan = Decimal("0")
@@ -587,17 +614,16 @@ def get_attendance_context_data(date_from_input="", date_to_input=""):
     return {
         "data": data,
         "error": error,
+        "month_input": month_input,
         "date_from_input": date_from_input,
         "date_to_input": date_to_input,
     }
 
 
 def attendance_view(request, admin_site):
-    date_from_input = request.GET.get("date_from", "")
-    date_to_input = request.GET.get("date_to", "")
+    month_input = request.GET.get("month", "")
     context_data = get_attendance_context_data(
-        date_from_input=date_from_input,
-        date_to_input=date_to_input,
+        month_input=month_input,
     )
 
     context = {

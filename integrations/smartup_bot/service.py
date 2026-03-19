@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,8 @@ from django.utils import timezone
 
 from integrations.models import SmartupAttendanceRow, SmartupAttendanceSync
 from integrations.smartup.parsers.route_analysis_parser import RouteAnalysisParser
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -336,6 +339,7 @@ class SmartupAttendanceSyncService:
         self.bot = SmartupAttendanceBot()
 
     def sync(self, date_from: str, date_to: str) -> dict[str, Any]:
+        logger.info("Attendance sync started for %s - %s", date_from, date_to)
         sync = SmartupAttendanceSync.objects.create(
             date_from=date_from,
             date_to=date_to,
@@ -381,6 +385,12 @@ class SmartupAttendanceSyncService:
                     ]
                 )
 
+            logger.info(
+                "Attendance sync finished successfully for %s - %s with %s rows",
+                date_from,
+                date_to,
+                len(summary["rows"]),
+            )
             return {
                 "sync_id": sync.id,
                 "status": sync.status,
@@ -392,6 +402,7 @@ class SmartupAttendanceSyncService:
                 "html_report_path": sync.html_report_path,
             }
         except Exception as exc:
+            logger.exception("Attendance sync failed for %s - %s", date_from, date_to)
             sync.status = SmartupAttendanceSync.STATUS_ERROR
             sync.error_message = str(exc)
             sync.finished_at = timezone.now()
@@ -399,6 +410,7 @@ class SmartupAttendanceSyncService:
             raise
 
     def get_latest_summary(self, date_from: str, date_to: str) -> dict[str, Any] | None:
+        logger.info("Fetching latest attendance summary for %s - %s", date_from, date_to)
         sync = (
             SmartupAttendanceSync.objects
             .filter(
@@ -412,6 +424,7 @@ class SmartupAttendanceSyncService:
         )
 
         if not sync:
+            logger.info("No attendance summary found for %s - %s", date_from, date_to)
             return None
 
         rows = [

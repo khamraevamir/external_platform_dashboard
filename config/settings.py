@@ -158,6 +158,33 @@ SMARTUP_ROUTE_ANALYSIS_URL = os.getenv(
     "https://smartup.online/#/!4km6nkksz/trade/rep/route_analysis",
 )
 SMARTUP_PLAYWRIGHT_HEADLESS = os.getenv("SMARTUP_PLAYWRIGHT_HEADLESS", "True")
+SMARTUP_ATTENDANCE_AUTOSYNC_ENABLED = os.getenv(
+    "SMARTUP_ATTENDANCE_AUTOSYNC_ENABLED",
+    "True",
+)
+SMARTUP_ATTENDANCE_SYNC_INTERVAL_SECONDS = int(
+    os.getenv("SMARTUP_ATTENDANCE_SYNC_INTERVAL_SECONDS", "21600")
+)
+SMARTUP_GOOGLE_SHEETS_SYNC_INTERVAL_SECONDS = int(
+    os.getenv("SMARTUP_GOOGLE_SHEETS_SYNC_INTERVAL_SECONDS", "3600")
+)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "integrations.smartup_bot": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / "credentials" / "google-service-account.json"

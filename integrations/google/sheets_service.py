@@ -121,19 +121,25 @@ class GoogleSheetsService:
         return f"{self.MONTHS_RU[date_obj.month - 1]}_{date_obj.year}"
 
     def get_current_month_sheet(self):
+        return self.get_month_sheet()
+
+    def get_month_sheet(self, date_obj=None):
         spreadsheet = self.get_spreadsheet()
-        sheet_name = self.get_month_sheet_name()
+        sheet_name = self.get_month_sheet_name(date_obj)
         return spreadsheet.worksheet(sheet_name)
 
     def get_current_month_values(self):
-        sheet_name = self.get_month_sheet_name()
+        return self.get_month_values()
+
+    def get_month_values(self, date_obj=None):
+        sheet_name = self.get_month_sheet_name(date_obj)
         cache_key = f"google-sheets:values:{settings.GOOGLE_SHEET_ID}:{sheet_name}"
         cached_values = cache.get(cache_key)
 
         if cached_values is not None:
             return cached_values
 
-        values = self.get_current_month_sheet().get_all_values()
+        values = self.get_month_sheet(date_obj).get_all_values()
         cache.set(cache_key, values, timeout=self.SHEET_VALUES_CACHE_TIMEOUT)
         return values
 
@@ -463,8 +469,8 @@ class GoogleSheetsService:
 
 
 
-    def get_metric_plan_map(self, criteria_name):
-        values = self.get_current_month_values()
+    def get_metric_plan_map(self, criteria_name, date_obj=None):
+        values = self.get_month_values(date_obj)
 
         target_criteria = self.normalize(criteria_name)
         result = {}
@@ -487,14 +493,14 @@ class GoogleSheetsService:
 
         return result
 
-    def get_sales_plan_map(self):
-        return self.get_metric_plan_map("Савдо")
+    def get_sales_plan_map(self, date_obj=None):
+        return self.get_metric_plan_map("Савдо", date_obj=date_obj)
 
-    def get_revenue_plan_map(self):
-        return self.get_metric_plan_map("Выручка")
+    def get_revenue_plan_map(self, date_obj=None):
+        return self.get_metric_plan_map("Выручка", date_obj=date_obj)
 
-    def get_metric_plan_map_by_position(self, criteria_name):
-        values = self.get_current_month_values()
+    def get_metric_plan_map_by_position(self, criteria_name, date_obj=None):
+        values = self.get_month_values(date_obj)
 
         target_criteria = self.normalize(criteria_name)
         result = {}
@@ -528,8 +534,8 @@ class GoogleSheetsService:
 
         return result
 
-    def get_attendance_plan_map(self):
-        return self.get_metric_plan_map_by_position("Плановый визит")
+    def get_attendance_plan_map(self, date_obj=None):
+        return self.get_metric_plan_map_by_position("Плановый визит", date_obj=date_obj)
 
     def _get_attendance_update_candidates(self, values, target_criteria):
         candidates = []
