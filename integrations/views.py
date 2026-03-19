@@ -2,6 +2,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
+
+from integrations.smartup_bot.service import SmartupAttendanceSyncService
 from integrations.smartup.services import SmartupService
 
 
@@ -353,13 +355,24 @@ Date format must be:
             )
 
         try:
-            service = SmartupService()
-
-            result = service.get_route_analysis_report_data(
+            service = SmartupAttendanceSyncService()
+            result = service.get_latest_summary(
                 date_from=date_from,
                 date_to=date_to,
             )
-    
+
+            if not result:
+                return Response(
+                    {
+                        "status": "error",
+                        "message": (
+                            "No synced attendance data found for this date range. "
+                            "Run: python manage.py sync_attendance"
+                        ),
+                    },
+                    status=404,
+                )
+
             return Response(result)
 
         except Exception as e:

@@ -6,6 +6,7 @@ from decimal import Decimal, InvalidOperation
 from django.core.cache import cache
 from django.template.response import TemplateResponse
 
+from integrations.smartup_bot.service import SmartupAttendanceSyncService
 from integrations.smartup.services import SmartupService
 from integrations.smartup.parsers.route_analysis_parser import RouteAnalysisParser
 from integrations.google.sheets_service import GoogleSheetsService
@@ -101,7 +102,7 @@ def normalize_short_name(value):
     parts = [part for part in cleaned.split() if part and part not in {"—", "-"}]
 
     if len(parts) >= 2:
-        return " ".join(sorted(parts[:2]))
+        return " ".join(parts[:2])
 
     return " ".join(parts)
 
@@ -175,6 +176,21 @@ def _get_revenue_plan_map(sheets_service=None, date_obj=None):
 
     return _get_cache_value(
         f"admin:revenue-plan-map:{sheet_name}",
+        producer,
+        timeout=PLAN_CACHE_TIMEOUT,
+    )
+
+
+def _get_attendance_plan_map(sheets_service=None, date_obj=None):
+    date_obj = date_obj or datetime.today()
+    sheet_name = get_month_sheet_name(date_obj)
+
+    def producer():
+        service = sheets_service or _get_sheets_service()
+        return service.get_attendance_plan_map()
+
+    return _get_cache_value(
+        f"admin:attendance-plan-map:{sheet_name}",
         producer,
         timeout=PLAN_CACHE_TIMEOUT,
     )
@@ -481,113 +497,113 @@ def revenue_view(request, admin_site):
         context,
     )
 
-
-def get_route_analysis_report(self, date_from: str, date_to: str) -> dict:
-        context = self._get_session_context()
-
-        params = {
-            "rt": "html",
-            "url": "/trade/rep/route_analysis:run_redirect",
-            "begin_date": date_from,
-            "end_date": date_to,
-            "person_group_id": "",
-            "person_kind": "",
-            "report_state": "A",
-            "show_mml": "Y",
-            "mml_type": "P",
-            "show_mml_to_sku": "N",
-            "-project_code": context["project_code"],
-            "-project_hash": context["project_hash"],
-            "-filial_id": context["filial_id"],
-            "-user_id": context["user_id"],
-            "-lang_code": context["lang_code"],
-        }
-        print("ROUTE ANALYSIS PARAMS:", params)
-        html = self.client.get(ROUTE_ANALYSIS_REPORT_PATH, params=params)
-
-        return {
-            "date_from": date_from,
-            "date_to": date_to,
-            "html": html,
-        }
-
-
-def get_route_analysis_report_data(self, date_from: str, date_to: str) -> dict:
-    report = self.get_route_analysis_report(
-        date_from=date_from,
-        date_to=date_to,
+def get_attendance_context_data(date_from_input="", date_to_input=""):
+    date_from_input, date_to_input, date_from, date_to = _resolve_date_range(
+        date_from_input,
+        date_to_input,
     )
 
-    parsed = RouteAnalysisParser.parse(report["html"])
+    data = None
+    error = None
+    sync_service = SmartupAttendanceSyncService()
+
+    try:
+        summary = sync_service.get_latest_summary(
+            date_from=date_from,
+            date_to=date_to,
+        )
+
+        if summary:
+            sheets_service = _get_sheets_service()
+            attendance_plan_map = _get_attendance_plan_map(
+                sheets_service=sheets_service,
+            )
+
+            total_plan = Decimal("0")
+            total_fact = Decimal("0")
+
+            for row in summary.get("rows", []):
+                normalized_staff = sheets_service.normalize(row.get("staff"))
+                plan_decimal = to_decimal(attendance_plan_map.get(normalized_staff, 0))
+                fact_decimal = to_decimal(row.get("total"))
+
+                row["plan"] = format_decimal(plan_decimal, 0)
+                row["fact"] = format_decimal(fact_decimal, 0)
+
+                if plan_decimal > 0:
+                    percent = (fact_decimal / plan_decimal) * Decimal("100")
+                    row["progress_percent"] = format_percent(percent, 0)
+                    clamped = max(0, min(100, int(percent)))
+                    row["progress_percent_clamped"] = clamped
+                    row["progress_color"] = progress_color_from_percent(clamped)
+                    row["percent"] = int(percent)
+                else:
+                    row["progress_percent"] = "—"
+                    row["progress_percent_clamped"] = 0
+                    row["progress_color"] = "red"
+                    row["percent"] = 0
+
+                total_plan += plan_decimal
+                total_fact += fact_decimal
+
+            summary_totals = summary.get("totals", {})
+            total_percent = Decimal("0")
+
+            if total_plan > 0:
+                total_percent = (total_fact / total_plan) * Decimal("100")
+
+            summary_totals["plan"] = format_decimal(total_plan, 0)
+            summary_totals["fact"] = format_decimal(total_fact, 0)
+
+            if total_plan > 0:
+                summary_totals["progress_percent"] = format_percent(total_percent, 0)
+                totals_clamped = max(0, min(100, int(total_percent)))
+                summary_totals["progress_percent_clamped"] = totals_clamped
+                summary_totals["progress_color"] = progress_color_from_percent(
+                    totals_clamped
+                )
+                summary_totals["percent"] = int(total_percent)
+            else:
+                summary_totals["progress_percent"] = "—"
+                summary_totals["progress_percent_clamped"] = 0
+                summary_totals["progress_color"] = "red"
+                summary_totals["percent"] = 0
+
+            data = {
+                "title": summary.get("title") or "Посещаемость",
+                "columns": ["Рабочая зона", "План", "Факт", "P", "PD", "Прогресс"],
+                "rows": summary.get("rows", []),
+                "totals": summary_totals,
+                "last_synced_at": summary.get("last_synced_at"),
+            }
+        else:
+            error = (
+                "Нет синхронизированных данных по посещаемости. "
+                "Запустите: python manage.py sync_attendance"
+            )
+    except Exception as e:
+        error = str(e)
 
     return {
-        "date_from": report["date_from"],
-        "date_to": report["date_to"],
-        "title": parsed["title"],
-        "rows": parsed["rows"],
+        "data": data,
+        "error": error,
+        "date_from_input": date_from_input,
+        "date_to_input": date_to_input,
     }
 
 
 def attendance_view(request, admin_site):
     date_from_input = request.GET.get("date_from", "")
     date_to_input = request.GET.get("date_to", "")
-
-    data = None
-    error = None
-
-    service = SmartupService()
-
-    try:
-        if date_from_input and date_to_input:
-            date_from = datetime.strptime(
-                date_from_input,
-                "%Y-%m-%d"
-            ).strftime("%d.%m.%Y")
-
-            date_to = datetime.strptime(
-                date_to_input,
-                "%Y-%m-%d"
-            ).strftime("%d.%m.%Y")
-        else:
-            today = datetime.today()
-            first_day = today.replace(day=1)
-
-            last_day_num = calendar.monthrange(
-                today.year,
-                today.month
-            )[1]
-            last_day = today.replace(day=last_day_num)
-
-            date_from_input = first_day.strftime("%Y-%m-%d")
-            date_to_input = last_day.strftime("%Y-%m-%d")
-
-            date_from = first_day.strftime("%d.%m.%Y")
-            date_to = last_day.strftime("%d.%m.%Y")
-
-        raw_data = service.get_route_analysis_report_data(
-            date_from=date_from,
-            date_to=date_to,
-        )
-
-        summary = build_visit_summary(raw_data.get("rows", []))
-
-        data = {
-            "title": raw_data.get("title") or "Посещаемость",
-            "columns": ["Штат", "P", "PD", "Итого"],
-            "rows": summary["rows"],
-            "totals": summary["totals"],
-        }
-
-    except Exception as e:
-        error = str(e)
+    context_data = get_attendance_context_data(
+        date_from_input=date_from_input,
+        date_to_input=date_to_input,
+    )
 
     context = {
         **admin_site.each_context(request),
         "title": "Посещаемость",
-        "data": data,
-        "error": error,
-        "date_from_input": date_from_input,
-        "date_to_input": date_to_input,
+        **context_data,
     }
 
     return TemplateResponse(

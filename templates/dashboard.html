@@ -5,6 +5,7 @@
 
     {{ dashboard_sales_chart|json_script:"dashboard-sales-chart" }}
     {{ dashboard_revenue_chart|json_script:"dashboard-revenue-chart" }}
+    {{ dashboard_attendance_chart|json_script:"dashboard-attendance-chart" }}
 
     <div class="mb-6">
         <div class="rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
@@ -59,8 +60,8 @@
             </div>
         </a>
 
-        <!-- Посещаемость (будущий функционал) -->
-        <div class="block rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 shadow-sm opacity-50 cursor-not-allowed">
+        <!-- Посещаемость -->
+        <a href="{% url 'admin:attendance' %}" class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition group">
             <div class="flex items-center gap-4">
                 <span class="inline-flex items-center justify-center rounded-full bg-yellow-100 p-3">
                     <svg class="w-7 h-7 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -69,10 +70,15 @@
                 </span>
                 <div>
                     <div class="text-lg font-semibold text-gray-900">Посещаемость</div>
-                    <div class="text-sm text-gray-500">Скоро появится</div>
+                    <div class="text-sm text-gray-500">Отчет по плану и факту визитов</div>
+                    {% if dashboard_attendance and dashboard_attendance.overall_totals %}
+                    <div class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
+                        <span class="text-gray-500">По факту: <span class="font-semibold text-gray-900 tabular-nums">{{ dashboard_attendance.overall_totals.fact }}</span></span>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     {% if dashboard_errors %}
@@ -190,7 +196,25 @@
             {% endif %} -->
         </div>
 
-        <!-- Посещаемость (disabled) -->
+        <!-- Посещаемость -->
+        <div class="space-y-4">
+            {% if dashboard_attendance and dashboard_attendance.overall_totals %}
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm mb-4">
+                    <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">Прогресс тп по плановому визиту</div>
+                    <div class="mt-3 relative h-[160px] w-[200px] mx-auto">
+                        <canvas id="attendance-plan-fact-chart" height="160" width="200"></canvas>
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div id="attendance-plan-fact-center" class="text-2xl font-bold text-gray-700 tabular-nums">—</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600">
+                        <span class="px-1">План: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_attendance.overall_totals.plan }}</span></span>
+                        <span class="px-1">Факт: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_attendance.overall_totals.fact }}</span></span>
+                    </div>
+                  
+                </div>
+            {% endif %}
+        </div>
     
     </div>
 
@@ -219,6 +243,7 @@
 
     const sales = getJson('dashboard-sales-chart');
     const revenue = getJson('dashboard-revenue-chart');
+    const attendance = getJson('dashboard-attendance-chart');
 
     const commonOptions = {
       responsive: true,
@@ -318,6 +343,30 @@
           }]
         },
         options: commonOptions
+      });
+    }
+
+    // ATTENDANCE: plan vs fact doughnut + процент по центру
+    if (attendance && document.getElementById('attendance-plan-fact-chart')) {
+      var plan = Number(attendance.plan) || 0, fact = Number(attendance.fact) || 0;
+      var pctEl = document.getElementById('attendance-plan-fact-center');
+      if (pctEl) pctEl.textContent = plan > 0 ? Math.round((fact / plan) * 100) + '%' : '—';
+      new Chart(document.getElementById('attendance-plan-fact-chart'), {
+        type: 'doughnut',
+        data: {
+          labels: ['План', 'Факт'],
+          datasets: [{
+            data: [plan, fact],
+            backgroundColor: ['#CBD5E1', '#D97706'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          cutout: '72%'
+        }
       });
     }
   })();

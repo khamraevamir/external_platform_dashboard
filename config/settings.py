@@ -148,9 +148,16 @@ SMARTUP_BASE_URL = os.getenv("SMARTUP_BASE_URL")
 SMARTUP_API_LOGIN = os.getenv("SMARTUP_API_LOGIN")
 SMARTUP_API_PASSWORD = os.getenv("SMARTUP_API_PASSWORD")
 SMARTUP_PROJECT_CODE = os.getenv("SMARTUP_PROJECT_CODE")
+SMARTUP_PROJECT_HASH = os.getenv("SMARTUP_PROJECT_HASH", "01")
 SMARTUP_FILIAL_ID = os.getenv("SMARTUP_FILIAL_ID")
 SMARTUP_REPORT_USER_ID = os.getenv("SMARTUP_REPORT_USER_ID")
 SMARTUP_SESSION_COOKIE = os.getenv("SMARTUP_SESSION_COOKIE", "")
+SMARTUP_LOGIN_URL = os.getenv("SMARTUP_LOGIN_URL", "https://smartup.online")
+SMARTUP_ROUTE_ANALYSIS_URL = os.getenv(
+    "SMARTUP_ROUTE_ANALYSIS_URL",
+    "https://smartup.online/#/!4km6nkksz/trade/rep/route_analysis",
+)
+SMARTUP_PLAYWRIGHT_HEADLESS = os.getenv("SMARTUP_PLAYWRIGHT_HEADLESS", "True")
 
 
 GOOGLE_SERVICE_ACCOUNT_FILE = BASE_DIR / "credentials" / "google-service-account.json"
@@ -204,10 +211,20 @@ UNFOLD = {
                         "icon": "payments",
                         "link": reverse_lazy("admin:revenue"),
                     },
+                    {
+                        "title": "Посещаемость",
+                        "icon": "analytics",
+                        "link": reverse_lazy("admin:attendance"),
+                    },
                     # {
-                    #     "title": "Посещаемость",
-                    #     "icon": "analytics",
-                    #     "link": reverse_lazy("admin:attendance"),
+                    #     "title": "Синки посещений",
+                    #     "icon": "sync",
+                    #     "link": reverse_lazy("admin:integrations_smartupattendancesync_changelist"),
+                    # },
+                    # {
+                    #     "title": "Строки посещений",
+                    #     "icon": "table_rows",
+                    #     "link": reverse_lazy("admin:integrations_smartupattendancerow_changelist"),
                     # },
                 ],
             },

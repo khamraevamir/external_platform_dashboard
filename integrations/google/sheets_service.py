@@ -58,6 +58,63 @@ class GoogleSheetsService:
 
         return " ".join(parts)
 
+    def normalize_short_name_reversed(self, value):
+        parts = self.normalize(value).split()
+
+        if len(parts) >= 2:
+            return f"{parts[1]} {parts[0]}"
+
+        return " ".join(parts)
+
+    def build_person_aliases(self, value=""):
+        normalized = self.normalize(value)
+        aliases = set()
+
+        if not normalized:
+            return aliases
+
+        aliases.add(normalized)
+        aliases.add(self.normalize_short_name(normalized))
+        aliases.add(self.normalize_short_name_reversed(normalized))
+
+        for token in normalized.split():
+            if token:
+                aliases.add(token)
+
+        return {alias for alias in aliases if alias}
+
+    def build_attendance_aliases(self, fio="", position=""):
+        aliases = set()
+        ignored_tokens = {"тп", "supervisor", "супервайзер", "менеджер"}
+
+        normalized_position = self.normalize(position)
+        normalized_fio = self.normalize(fio)
+
+        if normalized_position:
+            aliases.add(normalized_position)
+
+            cleaned_position = normalized_position
+            for prefix in ("тп ",):
+                if cleaned_position.startswith(prefix):
+                    cleaned_position = cleaned_position[len(prefix):].strip()
+
+            if cleaned_position:
+                aliases.add(cleaned_position)
+
+            for token in cleaned_position.split():
+                if token and token not in ignored_tokens:
+                    aliases.add(token)
+
+        if normalized_fio:
+            aliases.add(self.normalize_short_name(normalized_fio))
+            aliases.add(self.normalize_short_name_reversed(normalized_fio))
+
+            for token in normalized_fio.split():
+                if token and token not in ignored_tokens:
+                    aliases.add(token)
+
+        return {alias for alias in aliases if alias}
+
 
     def get_month_sheet_name(self, date_obj=None):
         date_obj = date_obj or datetime.today()
@@ -98,6 +155,84 @@ class GoogleSheetsService:
 
     def update_revenue_summary(self, payload):
         return self.update_metric_summary(payload, criteria_name="Выручка")
+
+    def update_attendance_summary(self, payload):
+        sheet = self.get_current_month_sheet()
+        values = self.get_current_month_values()
+
+        results = {
+            "status": "ok",
+            "sheet": sheet.title,
+            "criteria_name": "Плановый визит",
+            "updated": [],
+            "skipped": [],
+        }
+
+        target_criteria = self.normalize("Плановый визит")
+        batch_updates = []
+        candidates = self._get_attendance_update_candidates(values, target_criteria)
+
+        for item in payload:
+            source_name = self.normalize(
+                item.get("staff")
+                or item.get("work_area")
+                or item.get("name")
+                or ""
+            )
+            raw_value = item.get("fact") or item.get("total") or item.get("value") or 0
+            total_value = parse_number(raw_value)
+
+            if not source_name:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "empty_name",
+                })
+                continue
+
+            matches = [candidate for candidate in candidates if source_name in candidate["aliases"]]
+
+            if len(matches) > 1:
+                exact_matches = [
+                    candidate for candidate in matches
+                    if source_name in candidate["exact_aliases"]
+                ]
+                if len(exact_matches) == 1:
+                    matches = exact_matches
+
+            if len(matches) == 0:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "employee_not_found",
+                })
+                continue
+
+            if len(matches) > 1:
+                results["skipped"].append({
+                    "name": source_name,
+                    "reason": "multiple_matches",
+                })
+                continue
+
+            row_1_based = matches[0]["row_index"] + 1
+            col_1_based = self.COL_FACT + 1
+            cell_a1 = self.to_a1(col_1_based, row_1_based)
+
+            batch_updates.append({
+                "range": cell_a1,
+                "values": [[total_value]],
+            })
+
+            results["updated"].append({
+                "name": item.get("staff") or item.get("work_area") or item.get("name") or "",
+                "cell": cell_a1,
+                "value": total_value,
+            })
+
+        if batch_updates:
+            sheet.batch_update(batch_updates)
+            self.invalidate_current_month_cache()
+
+        return results
 
     def run_monthly_sheet_creation_if_needed(self):
         today = datetime.today()
@@ -204,7 +339,7 @@ class GoogleSheetsService:
 
         for item in payload:
             source_name = item.get("name") or item.get("sales_manager") or item.get("collector") or ""
-            short_name = self.normalize_short_name(source_name)
+            source_aliases = self.build_person_aliases(source_name)
             raw_value = (
                 item.get("value")
                 or item.get("converted_total_usd")
@@ -213,7 +348,7 @@ class GoogleSheetsService:
             )
             total_value = parse_number(raw_value)
 
-            if not short_name:
+            if not source_aliases:
                 results["skipped"].append({
                     "name": source_name,
                     "reason": "empty_name",
@@ -223,10 +358,32 @@ class GoogleSheetsService:
             matches = []
             for row_index, row_values in enumerate(values):
                 fio = row_values[self.COL_FIO] if len(row_values) > self.COL_FIO else ""
-                fio_short = self.normalize_short_name(fio)
+                row_aliases = self.build_person_aliases(fio)
 
-                if fio_short == short_name:
+                if source_aliases & row_aliases:
                     matches.append(row_index)
+
+            if len(matches) > 1:
+                exact_matches = []
+                normalized_source = self.normalize(source_name)
+                short_source = self.normalize_short_name(source_name)
+                reversed_short_source = self.normalize_short_name_reversed(source_name)
+
+                for row_index in matches:
+                    fio = values[row_index][self.COL_FIO] if len(values[row_index]) > self.COL_FIO else ""
+                    row_normalized = self.normalize(fio)
+                    row_short = self.normalize_short_name(fio)
+                    row_reversed_short = self.normalize_short_name_reversed(fio)
+
+                    if normalized_source in {row_normalized, row_short, row_reversed_short}:
+                        exact_matches.append(row_index)
+                    elif short_source in {row_normalized, row_short, row_reversed_short}:
+                        exact_matches.append(row_index)
+                    elif reversed_short_source in {row_normalized, row_short, row_reversed_short}:
+                        exact_matches.append(row_index)
+
+                if len(exact_matches) == 1:
+                    matches = exact_matches
 
             if len(matches) == 0:
                 results["skipped"].append({
@@ -335,6 +492,94 @@ class GoogleSheetsService:
 
     def get_revenue_plan_map(self):
         return self.get_metric_plan_map("Выручка")
+
+    def get_metric_plan_map_by_position(self, criteria_name):
+        values = self.get_current_month_values()
+
+        target_criteria = self.normalize(criteria_name)
+        result = {}
+
+        current_position = None
+        current_fio = None
+
+        for row_values in values:
+            fio = row_values[self.COL_FIO] if len(row_values) > self.COL_FIO else ""
+            position = row_values[self.COL_POSITION] if len(row_values) > self.COL_POSITION else ""
+            criteria = row_values[self.COL_CRITERIA] if len(row_values) > self.COL_CRITERIA else ""
+            plan_value = row_values[self.COL_PLAN] if len(row_values) > self.COL_PLAN else ""
+
+            if self.normalize(fio):
+                current_fio = fio
+
+            if self.normalize(position):
+                current_position = self.normalize(position)
+
+            if not current_position:
+                continue
+
+            if self.normalize(criteria) == target_criteria:
+                parsed_plan = parse_number(plan_value)
+                aliases = self.build_attendance_aliases(
+                    fio=current_fio or "",
+                    position=current_position,
+                )
+                for alias in aliases:
+                    result[alias] = parsed_plan
+
+        return result
+
+    def get_attendance_plan_map(self):
+        return self.get_metric_plan_map_by_position("Плановый визит")
+
+    def _get_attendance_update_candidates(self, values, target_criteria):
+        candidates = []
+        current_fio = None
+        current_position = None
+
+        for row_index, row_values in enumerate(values):
+            fio = row_values[self.COL_FIO] if len(row_values) > self.COL_FIO else ""
+            position = row_values[self.COL_POSITION] if len(row_values) > self.COL_POSITION else ""
+            criteria = row_values[self.COL_CRITERIA] if len(row_values) > self.COL_CRITERIA else ""
+
+            if self.normalize(fio):
+                current_fio = fio
+
+            if self.normalize(position):
+                current_position = position
+
+            if not current_position:
+                continue
+
+            if self.normalize(criteria) != target_criteria:
+                continue
+
+            normalized_position = self.normalize(current_position)
+            cleaned_position = normalized_position.removeprefix("тп ").strip()
+            fio_tokens = [
+                token for token in self.normalize(current_fio or "").split()
+                if token
+            ]
+            exact_aliases = {
+                alias for alias in (
+                    normalized_position,
+                    cleaned_position,
+                    self.normalize(current_fio or ""),
+                    self.normalize_short_name(current_fio or ""),
+                    self.normalize_short_name_reversed(current_fio or ""),
+                ) if alias
+            }
+            exact_aliases.update(fio_tokens)
+
+            candidates.append({
+                "row_index": row_index,
+                "aliases": self.build_attendance_aliases(
+                    fio=current_fio or "",
+                    position=current_position,
+                ),
+                "exact_aliases": exact_aliases,
+            })
+
+        return candidates
 
     def get_position_map(self):
         values = self.get_current_month_values()

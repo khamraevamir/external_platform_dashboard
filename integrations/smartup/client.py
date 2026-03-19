@@ -146,7 +146,7 @@ class SmartupClient:
         return {
             "currency": "USD",
             "buy": "buy",
-            "sell": "12200",
+            "sell": "12190",
             "cb_rate": "cb_rate",
             "updated_at": "updated_at",
             "source": "",

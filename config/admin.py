@@ -4,6 +4,7 @@ from django.urls import path
 from unfold.sites import UnfoldAdminSite
 
 from integrations.admin_views import (
+    get_attendance_context_data,
     attendance_view,
     get_month_sheet_name,
     get_position_map_cached,
@@ -61,13 +62,25 @@ class CustomAdminSite(UnfoldAdminSite):
             revenue_ctx = {}
             dashboard_errors.append(f"Выручка: {e}")
 
+        try:
+            attendance_ctx = get_attendance_context_data(
+                date_from_input=request.GET.get("date_from", ""),
+                date_to_input=request.GET.get("date_to", ""),
+            )
+        except Exception as e:
+            attendance_ctx = {}
+            dashboard_errors.append(f"Посещаемость: {e}")
+
         sales_data = sales_ctx.get("data") or {}
         revenue_data = revenue_ctx.get("data") or {}
+        attendance_data = attendance_ctx.get("data") or {}
 
         sales_rows = sales_data.get("rows") or []
         revenue_rows = revenue_data.get("rows") or []
         sales_totals = sales_data.get("totals") or {}
         revenue_totals = revenue_data.get("totals") or {}
+        attendance_rows = attendance_data.get("rows") or []
+        attendance_totals = attendance_data.get("totals") or {}
 
         position_map = {}
 
@@ -138,15 +151,27 @@ class CustomAdminSite(UnfoldAdminSite):
                         "total_usd": _format_decimal(revenue_fact, 2),
                     },
                 },
+                "dashboard_attendance": {
+                    "overall_totals": {
+                        "plan": attendance_totals.get("plan", "0"),
+                        "fact": attendance_totals.get("fact", "0"),
+                        "p": attendance_totals.get("p", "0"),
+                        "pd": attendance_totals.get("pd", "0"),
+                        "total": attendance_totals.get("total", "0"),
+                    },
+                    "rows": attendance_rows,
+                },
                 "dashboard_month_label": dashboard_month_label,
                 "dashboard_date_from_input": (
                     sales_ctx.get("date_from_input")
                     or revenue_ctx.get("date_from_input")
+                    or attendance_ctx.get("date_from_input")
                     or ""
                 ),
                 "dashboard_date_to_input": (
                     sales_ctx.get("date_to_input")
                     or revenue_ctx.get("date_to_input")
+                    or attendance_ctx.get("date_to_input")
                     or ""
                 ),
                 "dashboard_errors": dashboard_errors,
@@ -174,6 +199,19 @@ class CustomAdminSite(UnfoldAdminSite):
                     "plan_values": [
                         float(_to_decimal_safe(r.get("plan")))
                         for r in revenue_top
+                    ],
+                },
+                "dashboard_attendance_chart": {
+                    "plan": float(_to_decimal_safe(attendance_totals.get("plan"))),
+                    "fact": float(_to_decimal_safe(attendance_totals.get("fact"))),
+                    "labels": [r.get("staff") for r in attendance_rows[:5]],
+                    "fact_values": [
+                        float(_to_decimal_safe(r.get("fact")))
+                        for r in attendance_rows[:5]
+                    ],
+                    "plan_values": [
+                        float(_to_decimal_safe(r.get("plan")))
+                        for r in attendance_rows[:5]
                     ],
                 },
             }
@@ -205,15 +243,15 @@ class CustomAdminSite(UnfoldAdminSite):
                 name="revenue",
             ),
             path(
+                "attendance/",
+                self.admin_view(self.attendance),
+                name="attendance",
+            ),
+            path(
                 "",
                 self.admin_view(self.index),
                 name="index",
             ),
-            # path(
-            #     "attendance/",
-            #     self.admin_view(self.attendance),
-            #     name="attendance",
-            # ),
         ]
 
         return custom_urls + urls

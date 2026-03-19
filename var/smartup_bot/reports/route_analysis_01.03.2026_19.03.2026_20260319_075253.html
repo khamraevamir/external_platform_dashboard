@@ -1,0 +1,3229 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Smartup</title>
+<script src='/assets/jquery/jquery.min.js'></script>
+<script src='/assets/jquery/jquery.resize.js'></script>
+<script src='/assets/bootstrap/js/bootstrap.bundle.min.js'></script>
+<script src='/assets/biruni/report.js'></script>
+<link href='/assets/fontawesome/css/all.min.css' rel='stylesheet' type='text/css'/>
+<link href='/assets/metronic/css/style.bundle.css' rel='stylesheet' type='text/css'/>
+<style>#report-header{position:fixed;top:0;left:0;width:100%;z-index:10000;}
+.b-head-line{background-color:#A2228D;width:12.5%;height:1px;float:left;}
+#report-content{height:100%;min-width:100%;width:unset!important;background-color:#fcfcfc;}
+.report-brand{padding:3px;color:#c7c5d8;}
+#report-sheets{padding:0;}
+@media screen{.bsr-pb{visibility:hidden;}.bsr-trans{cursor:pointer;color:#1a0dab !important;}.bsr-trans:hover{text-decoration:underline;}}
+@media print{@page{size:auto;}#report-header{display:none!important;}#report-content{margin-top:0!important;}#report-sheets{display:none;}#cell-menu{display:none !important;}}
+pm{display:none;}
+menu-ids{display:none;}
+.bsr-table{margin:auto;color:black;border-collapse:collapse;}.bsr-table td{padding:2px;}
+.bsr-table tr{page-break-after:avoid;}
+.bsr-table tr.b-page-break{page-break-after:always;}
+.bsr-table tr.b-page-breakable{page-break-after:auto;}
+.bsr-table .frozen-row{position:sticky!important;z-index:20 !important;}
+.bsr-table .frozen-col{position:sticky!important;z-index:10 !important;}
+.bsr-table .frozen-row .frozen-col{z-index:30 !important;}
+th, td{background-color:#fcfcfc;}
+.bsr-0{color:#0C0C0C;font-family:sans-serif;font-size:8pt;word-wrap:break-word;vertical-align:top;}
+.bsr-1{color:#0C0C0C;font-family:sans-serif;font-size:8pt;font-weight:bold;background-color:#D5D5D5;word-wrap:break-word;text-align:center;vertical-align:middle;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-2{color:#0C0C0C;font-family:sans-serif;font-size:8pt;font-weight:bold;background-color:#EAEAEA;word-wrap:break-word;text-align:center;vertical-align:middle;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-3{color:#0C0C0C;font-family:sans-serif;font-size:8pt;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-4{font-weight:bold;white-space:nowrap;}
+.bsr-5{font-style:italic;white-space:nowrap;}
+.bsr-6{text-decoration:underline;white-space:nowrap;}
+.bsr-7{white-space:nowrap;text-align:left;}
+.bsr-8{white-space:nowrap;text-align:center;}
+.bsr-9{white-space:nowrap;text-align:right;}
+.bsr-10{white-space:nowrap;vertical-align:top;}
+.bsr-11{white-space:nowrap;vertical-align:middle;}
+.bsr-12{white-space:nowrap;vertical-align:bottom;}
+.bsr-13{white-space:nowrap;}
+.bsr-14{white-space:nowrap;text-align:right;}
+.bsr-15{white-space:nowrap;text-align:right;}
+.bsr-16{white-space:nowrap;text-align:right;}
+.bsr-17{white-space:nowrap;text-align:right;}
+.bsr-18{white-space:nowrap;text-align:right;}
+.bsr-19{white-space:nowrap;text-align:right;}
+.bsr-20{white-space:nowrap;text-align:right;}
+.bsr-21{white-space:nowrap;overflow:hidden;}
+.bsr-21 > div{-webkit-transform:rotate(-90deg);-moz-transform:rotate(-90deg);-o-transform:rotate(-90deg);display: block;height: 41px;width: 146px;margin-left: -54.5px;margin-bottom: 54.5px;}
+.bsr-22{white-space:nowrap;overflow:hidden;}
+.bsr-22 > div{-webkit-transform:rotate(90deg);-moz-transform:rotate(90deg);-o-transform:rotate(90deg);display: block;height: 41px;width: 146px;margin-right: -54.5px;margin-top: 54.5px;}
+.bsr-23{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffc7ce;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-24{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#c6efce;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-25{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffeb9c;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-26{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffcc99;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-27{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#eeeeee;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-28{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#f8cbad;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-29{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#f4b084;word-wrap:break-word;text-align:left;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-30{color:#0C0C0C;font-family:sans-serif;font-size:8pt;word-wrap:break-word;text-align:center;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-31{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffc7ce;word-wrap:break-word;text-align:center;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-32{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffeb9c;word-wrap:break-word;text-align:center;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-33{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#c6efce;word-wrap:break-word;text-align:center;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-34{color:#0C0C0C;font-family:sans-serif;font-size:8pt;word-wrap:break-word;text-align:right;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-35{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffc7ce;word-wrap:break-word;text-align:right;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-36{color:#0C0C0C;font-family:sans-serif;font-size:8pt;word-wrap:break-word;text-align:right;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-37{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#c6efce;word-wrap:break-word;text-align:right;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-38{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffeb9c;word-wrap:break-word;text-align:right;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-39{color:#0C0C0C;font-family:sans-serif;font-size:8pt;background-color:#ffcc99;word-wrap:break-word;text-align:right;vertical-align:top;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-40{color:#0C0C0C;font-family:sans-serif;font-size:8pt;font-weight:bold;background-color:#D5D5D5;word-wrap:break-word;text-align:right;vertical-align:middle;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-41{color:#0C0C0C;font-family:sans-serif;font-size:8pt;font-weight:bold;background-color:#D5D5D5;word-wrap:break-word;text-align:right;vertical-align:middle;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+.bsr-42{color:#0C0C0C;font-family:sans-serif;font-size:8pt;font-weight:bold;background-color:#D5D5D5;word-wrap:break-word;text-align:right;vertical-align:middle;border-top:1px solid #7F7F7F;border-bottom:1px solid #7F7F7F;border-left:1px solid #7F7F7F;border-right:1px solid #7F7F7F;}
+</style></head><body class='h-auto'>
+<div id='report-header' class='sticky-top'>
+<nav class='navbar navbar-expand-lg navbar-light bg-light'>
+<div class='navbar-brand report-brand'><a><img height='32' src=''/></a>&emsp;Анализ-маршрута(19.03.2026 12:52:52)</div>
+<button type='button' id='print-btn' class='btn btn-default ml-auto mr-2'><i class='fa fa-print' aria-hidden='true'></i></button>
+<div class='btn-group' id='report-types'>
+<button type='button' class='btn btn-default rounded-left'><i class='fa fa-cloud-download-alt' aria-hidden='true'></i>&nbsp;EXCEL<pm>xlsx</pm></button>
+<button type='button' class='btn btn-default rounded-right dropdown-toggle dropdown-toggle-split' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+<span class='sr-only'></span>
+</button>
+<div class='dropdown-menu dropdown-menu-right'>
+<a class='dropdown-item'><i class='fa fa-cloud-download-alt' aria-hidden='true'></i>&nbsp;CSV<pm>csv</pm></a>
+<a class='dropdown-item'><i class='fa fa-cloud-download-alt' aria-hidden='true'></i>&nbsp;XML<pm>xml</pm></a>
+</div>
+</div>
+</nav>
+</div>
+<div class='container-fluid' id='report-content'>
+<div class='row'>
+<table cellspacing='0' cellpadding='0' class='bsr-table' frozen-row='0' frozen-col='0'><col width='50'/>
+<col width='150'/>
+<col width='150'/>
+<col width='150'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='50'/>
+<col width='100'/>
+<col width='100'/>
+<col width='100'/>
+<col width='100'/>
+<col width='100'/>
+<col width='100'/>
+<col width='20'/>
+<col width='20'/>
+<col width='20'/>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td colspan=3>Запланированный визит на будущий период:</td>
+<td class='bsr-30'>O</td>
+<td colspan=3>MML (%):</td>
+<td>M%</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td colspan=3>Проигнорированный плановый визит:</td>
+<td class='bsr-31'>X</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td colspan=3>Внеплановый визит без заказа:</td>
+<td class='bsr-32'>U</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td colspan=3>Внеплановый визит с заказом:</td>
+<td class='bsr-32'>UD</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td colspan=3>Плановый визит без заказа:</td>
+<td class='bsr-33'>P</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td colspan=3>Плановый визит с заказом:</td>
+<td class='bsr-33'>PD</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr>
+<td class='bsr-1'>Номер заказа</td>
+<td class='bsr-1'>Рабочая зона</td>
+<td class='bsr-1'>Штат</td>
+<td class='bsr-1'>Клиент</td>
+<td class='bsr-1'>Итог за неделю</td>
+<td class='bsr-1'>Пн</td>
+<td class='bsr-1'>Вт</td>
+<td class='bsr-1'>Ср</td>
+<td class='bsr-1'>Чт</td>
+<td class='bsr-1'>Пт</td>
+<td class='bsr-1'>Сб</td>
+<td class='bsr-1'>Итог за неделю</td>
+<td class='bsr-1'>Пн</td>
+<td class='bsr-1'>Вт</td>
+<td class='bsr-1'>Ср</td>
+<td class='bsr-1'>Чт</td>
+<td class='bsr-1'>Пт</td>
+<td class='bsr-1'>Сб</td>
+<td class='bsr-1'>Итог за неделю</td>
+<td class='bsr-1'>Пн</td>
+<td class='bsr-1'>Вт</td>
+<td class='bsr-1'>Ср</td>
+<td class='bsr-1'>Чт</td>
+<td class='bsr-1'>Итог за неделю</td>
+<td class='bsr-1' colspan=4>Количество визитов</td>
+<td class='bsr-1' colspan=2>План визитов</td>
+<td class='bsr-1'>&nbsp;</td>
+<td class='bsr-1'>&nbsp;</td>
+<td class='bsr-1'>&nbsp;</td>
+</tr>
+<tr>
+<td class='bsr-1'>&nbsp;</td>
+<td class='bsr-1'>&nbsp;</td>
+<td class='bsr-1'>&nbsp;</td>
+<td class='bsr-1'>&nbsp;</td>
+<td class='bsr-1'>1 неделя</td>
+<td class='bsr-1'>2</td>
+<td class='bsr-1'>3</td>
+<td class='bsr-1'>4</td>
+<td class='bsr-1'>5</td>
+<td class='bsr-1'>6</td>
+<td class='bsr-1'>7</td>
+<td class='bsr-1'>2 неделя</td>
+<td class='bsr-1'>9</td>
+<td class='bsr-1'>10</td>
+<td class='bsr-1'>11</td>
+<td class='bsr-1'>12</td>
+<td class='bsr-1'>13</td>
+<td class='bsr-1'>14</td>
+<td class='bsr-1'>3 неделя</td>
+<td class='bsr-1'>16</td>
+<td class='bsr-1'>17</td>
+<td class='bsr-1'>18</td>
+<td class='bsr-1'>19</td>
+<td class='bsr-1'>4 неделя</td>
+<td class='bsr-1'>U</td>
+<td class='bsr-1'>UD</td>
+<td class='bsr-1'>P</td>
+<td class='bsr-1'>PD</td>
+<td class='bsr-1'>X</td>
+<td class='bsr-1'>O</td>
+<td class='bsr-1'>Результативность %</td>
+<td class='bsr-1'>Результативность визитов (%)</td>
+<td class='bsr-1'>Продуктивность</td>
+</tr>
+<tr>
+<td class='bsr-34'>1</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>SHAM AND HHS STROY MChJ (АХМАД АКА ВАДАКАНАЛ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>2</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>YATT Karimov Qudrat    (КУДРАТ АКА)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>UD</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>3</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>VSE STROY MCHJ (СОХИБ АКА 7-МКР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-37'>100</td>
+<td class='bsr-36'>100</td>
+<td class='bsr-3'>Да</td>
+</tr>
+<tr>
+<td class='bsr-34'>4</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Ashurov Alisher Plyus MChJ   (АЛИШЕР АКА ХАЗРАТИ ИМОМ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>5</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>MUXAMMAD SODIQ HAQBERDIYEV MCHJ   (БАЗАРВЕЙ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-37'>100</td>
+<td class='bsr-36'>100</td>
+<td class='bsr-3'>Да</td>
+</tr>
+<tr>
+<td class='bsr-34'>6</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>MUNIS ASL DIYOR XK (БОБОМУРОД АКА ОЛОТ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>7</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>MAXMUD GOZO VERO MChJ    (МАХМУД АКА 445МАГАЗИН)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>8</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ASLONOV MIRZO YATT (МИРШОД АКА КАРАВУЛ БОЗОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>33.33</td>
+<td class='bsr-36'>100</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>9</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>QIROLIDDIN FAYZ MCHJ (САНЖАР АКА КОГОН)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-39'>66.67</td>
+<td class='bsr-36'>66.67</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>10</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ЭЛОМОН АКА ОЛОТ строй сентр</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>11</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ASLANOV HTCH (УМАР АКА МОШИН БОЗОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>12</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ERKIN MEXMUD MCHJ (АБДУМАЛИК АКА ЖОНДОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>13</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>RO&#96;ZIYEV AZIZBEK ANVAROVICH YATT   (АЗИЗ АКА САМОНЧУК)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>33.33</td>
+<td class='bsr-36'>33.33</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>14</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>YATT HAYDAROV RAXIMXON O&#96;KTAMOVICH (Ака Рахимхон Мега Декор)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>15</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Kogon Dildora qurilish mollari MChJ    (АКБАР АКА КОГОН)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>16</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>YASINA AKMAL MCHJ   (Акмал ака Когон магазин)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>17</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>AYLANMA SAVDO YATT   (АСИЛБЕК АКА ЖОНДОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>18</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>АШУРБЕК АКА ЛОША</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>19</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>RAXMAT ALI MARKET OK (БАХОДИР АКА ТАЛАЛИЁН МФ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>20</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>BIG BAG BUKHARA OK (БИГ БАГ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>21</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Azamat Rizamat Lola MChJ  (БОБУР АКА ЖОНДОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>33.33</td>
+<td class='bsr-36'>33.33</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>22</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>DOSTON DIYOR PLYUS XK (ДОСТОН АКА КОРАКУЛ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>23</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>SHAVKAT OLTIBOYEVICH XK (ШАВКАТ АКА КОРАКУЛ КИР 111)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>33.33</td>
+<td class='bsr-36'>33.33</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>24</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>JONIBEK JASMIN STROY MCHJ   (ЖОНИБЕК АКА 5 МКР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>25</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ЗАФАР ЖАХОНГИР ОЛОТ ЭРЕЕЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>26</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>HOLOV ZOHID YATT   (ЗОХИД АКА КОРАКУЛ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>27</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ZUFAR PLYUS VOHID GOLD OK (ЗУФАР АКА КОРАКУЛ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>28</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>БЕХРУЗ КАФЕЛ МАГАЗИН ПРОРАБ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>UD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>33.33</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>29</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>КАХХОР АКА ШЕХОНЧА</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>30</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Крофф (Алишер ака)оптим курилиш бозори каравулбозор</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>UD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>100</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>31</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>МАНСУР АКА КОРАКУЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>&nbsp;</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>32</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>MAXMUD MAQSUD MEGA XK (МАХМУД АКА КОГОН МАНСУР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>33</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>OMAD BARAKA MCHJ   (МИРЖАЛОЛ ЧУП БОЗОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>34</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>MIRSHOD YATT    (МИРШОД АКА МАДАНИЯТ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-39'>66.67</td>
+<td class='bsr-36'>66.67</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>35</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ERGASHEV MUHAMMAD YATT    (МУХАММАД АКА БОВАДИН)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-37'>100</td>
+<td class='bsr-36'>100</td>
+<td class='bsr-3'>Да</td>
+</tr>
+<tr>
+<td class='bsr-34'>36</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>MAG STROY OZOD STROY MCHJ    (НАРЗИЛЛО АКА МОШИН БОЗОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>37</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>AMINOV NUSRAT YATT    (НУСРАТ АКА УГУЛОВОЙ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>38</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ОТАЖОН КОРАКУЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>39</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>НУРИДДИН АКА УЗГАЗОИЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>UD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>100</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>40</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>САФАРАЛИ ЗИРАБОД</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>33.33</td>
+<td class='bsr-36'>33.33</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>41</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>SARDORBEK GULXAYO MCHJ   (САФАРМУРОД АКА ЖОНДОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>42</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>СТРОЙ ГОРОД ХУРШИД АКА</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>43</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>SHUKUROV SHOXNAZAR SHAVKATOVICH YATT    (СУХРОБ АКА 5-МКР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>UD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>44</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>OLTINQURBON SAXOVATI MCHJ (УМРУЗОК КОРАКУЛ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>45</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ФАРХОД АКА ЛОША</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>46</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Osiyo Qurilish LUX MCHJ (ШАРИФ АКА ЧУПБОЗОР)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>47</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>KAGAN BEST GARAND MCHJ (ШОХЖАХОН АКА КОГОН)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-39'>66.67</td>
+<td class='bsr-36'>66.67</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>48</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>АЗАМ АКА ЖОНДОР</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>49</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>SHERJAHON UMID XK (ГУЛОМ АКА ОЛОТ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>50</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>МИРХАН АКА ЧУПБОЗОР</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>51</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>РАШИД АКА КОРАКУЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>52</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Мухтор дурмон коракул</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>53</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ФЕРУЗ АКА ГИОФИЗИКА</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-39'>66.67</td>
+<td class='bsr-36'>66.67</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>54</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ХАБИБ АКА 5-МКР</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>55</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ХАБИБ АКА ЖОНДОР</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>56</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ФЕРУЗ АКА МАСТЕРОК</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>57</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ЛОЧИН  ОЛОТ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>58</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>YATT MAXMUDOV N (НУРМАТ АКА ХАЗРАТИ ИМОМ)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>59</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>JAVOXIR STROY MARKET XK (Жавохир ака олот)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>60</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>KAMOL A&#96;ZAM ABDI MChJ (Жамол ака Жондор)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>61</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Бобомурод ака каракул</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>62</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ШАХЛО ОРА КОРАКУЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>PD</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-38'>50</td>
+<td class='bsr-36'>50</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>63</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ЖАМШИД АКА  КОРАКУЛ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>64</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Хамид ака каракул</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-30'>O</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>65</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Олим ака Хазрати Имом</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>66</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>АКА ШАМШОД 5 МИКРАЁН</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>67</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>РИЗО АКА ЗИРАБОД</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>68</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ГУЛШОДА ОПА ХАЗРАТИ ИМОМ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>69</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Nigina stroy plyus YTT (АВАЗ АКА АФШОР МАХАЛЛА)</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-33'>P</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>2</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>70</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>ГИПЕР БРЕНТ СТРОЙ БЕТОНКА</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>71</td>
+<td class='bsr-3'>Дилшод</td>
+<td class='bsr-3'>ТП Дилшод</td>
+<td class='bsr-3'>Миршод ака Раймаг</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-32'>U</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>1</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>0</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>72</td>
+<td class='bsr-3'>Анвар</td>
+<td class='bsr-3'>Хайотов Сухроб Сохибович</td>
+<td class='bsr-3'>КИЗИЛТЕПА АЗИЗОБОД ГАВХАР ОПА</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>&nbsp;</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-34'>73</td>
+<td class='bsr-3'>Анвар</td>
+<td class='bsr-3'>HR</td>
+<td class='bsr-3'>АБДУЛЛО АКА ПЕШКУ</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-31'>X</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-3'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-34'>3</td>
+<td class='bsr-34'>&nbsp;</td>
+<td class='bsr-35'>&nbsp;</td>
+<td class='bsr-36'>&nbsp;</td>
+<td class='bsr-3'>Нет</td>
+</tr>
+<tr>
+<td class='bsr-1' rowspan=4 colspan=3>Итоговое количество визитов в день:</td>
+<td class='bsr-1'>U</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>5</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>4</td>
+<td class='bsr-40'>12</td>
+<td class='bsr-40'>5</td>
+<td class='bsr-40'>113</td>
+<td class='bsr-40'>27</td>
+<td class='bsr-40'>17</td>
+<td class='bsr-40'>9</td>
+<td class='bsr-41'>17.2</td>
+<td class='bsr-41'>20.38</td>
+<td class='bsr-40'>3</td>
+</tr>
+<tr>
+<td class='bsr-1'>UD</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40' rowspan=3 colspan=4>157</td>
+<td class='bsr-42' rowspan=3 colspan=5>Количество клиентов: 73</td>
+</tr>
+<tr>
+<td class='bsr-1'>P</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>6</td>
+<td class='bsr-40'>7</td>
+<td class='bsr-40'>9</td>
+<td class='bsr-40'>7</td>
+<td class='bsr-40'>9</td>
+<td class='bsr-40'>11</td>
+<td class='bsr-40'>49</td>
+<td class='bsr-40'>5</td>
+<td class='bsr-40'>4</td>
+<td class='bsr-40'>7</td>
+<td class='bsr-40'>6</td>
+<td class='bsr-40'>8</td>
+<td class='bsr-40'>12</td>
+<td class='bsr-40'>42</td>
+<td class='bsr-40'>6</td>
+<td class='bsr-40'>7</td>
+<td class='bsr-40'>9</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>22</td>
+</tr>
+<tr>
+<td class='bsr-1'>PD</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>10</td>
+<td class='bsr-40'>5</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>14</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>3</td>
+</tr>
+<tr>
+<td class='bsr-1' rowspan=2 colspan=3>Итоговое количество визитов по плану в день:</td>
+<td class='bsr-1'>X</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>6</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>2</td>
+<td class='bsr-40'>8</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>1</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>3</td>
+<td class='bsr-42' rowspan=2 colspan=9>Эффективность по количеству клиентов: 4.11%</td>
+</tr>
+<tr>
+<td class='bsr-1'>O</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>&nbsp;</td>
+<td class='bsr-40'>9</td>
+<td class='bsr-40'>9</td>
+</tr>
+<tr>
+<td class='bsr-1' colspan=4>Эффективность за день (%):</td>
+<td class='bsr-41'>&nbsp;</td>
+<td class='bsr-41'>30</td>
+<td class='bsr-41'>11.11</td>
+<td class='bsr-41'>&nbsp;</td>
+<td class='bsr-41'>11.11</td>
+<td class='bsr-41'>16.67</td>
+<td class='bsr-41'>20</td>
+<td class='bsr-41'>15.38</td>
+<td class='bsr-41'>50</td>
+<td class='bsr-41'>37.5</td>
+<td class='bsr-41'>10</td>
+<td class='bsr-41'>22.22</td>
+<td class='bsr-41'>16.67</td>
+<td class='bsr-41'>6.67</td>
+<td class='bsr-41'>21.88</td>
+<td class='bsr-41'>30</td>
+<td class='bsr-41'>&nbsp;</td>
+<td class='bsr-41'>&nbsp;</td>
+<td class='bsr-41'>&nbsp;</td>
+<td class='bsr-41'>10.71</td>
+<td class='bsr-41' colspan=9>Общая эффективность по плану (%): 17.2</td>
+</tr>
+</table>
+</div>
+</div>
+</body></html>
