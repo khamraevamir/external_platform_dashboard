@@ -1,18 +1,46 @@
 {% extends "admin/base_site.html" %}
 
 {% block content %}
-<div class="mx-auto max-w-7xl px-4 py-6 lg:px-6">
+<div class="mx-auto max-w-7xl py-4 lg:px-6 lg:py-6">
+
+    <style>
+        html.dark .dashboard-light-card,
+        .dark .dashboard-light-card {
+            background: #ffffff !important;
+            border-color: #d1d5db !important;
+        }
+
+        html.dark .dashboard-title,
+        .dark .dashboard-title {
+            color: #111827 !important;
+        }
+
+        html.dark .dashboard-subtitle,
+        .dark .dashboard-subtitle {
+            color: #6b7280 !important;
+        }
+
+        html.dark .dashboard-value,
+        .dark .dashboard-value {
+            color: #111827 !important;
+        }
+
+        html.dark .dashboard-center-value,
+        .dark .dashboard-center-value {
+            color: #9ca3af !important;
+        }
+    </style>
 
     {{ dashboard_sales_chart|json_script:"dashboard-sales-chart" }}
     {{ dashboard_revenue_chart|json_script:"dashboard-revenue-chart" }}
     {{ dashboard_attendance_chart|json_script:"dashboard-attendance-chart" }}
 
     <div class="mb-6">
-        <div class="rounded-default border border-gray-200 bg-white px-5 py-4 shadow-sm">
-            <div class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        <div class="dashboard-light-card rounded-default border border-gray-200 bg-white px-5 py-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <div class="dashboard-subtitle text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
                 Период
             </div>
-            <div class="mt-1 text-2xl font-semibold text-gray-900">
+            <div class="dashboard-title mt-1 text-2xl font-semibold text-gray-900 dark:text-white">
                 {{ dashboard_month_label }}
             </div>
         </div>
@@ -21,19 +49,19 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
 
         <!-- Продажа -->
-        <a href="{% url 'admin:sales-summary' %}" class="block rounded-default border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition group">
+        <a href="{% url 'admin:sales-summary' %}" class="dashboard-light-card block rounded-default border border-gray-200 bg-white p-6 shadow-sm transition group hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-blue-900/70">
             <div class="flex items-center gap-4">
-                <span class="inline-flex items-center justify-center rounded-full bg-blue-100 p-3">
-                    <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <span class="inline-flex items-center justify-center rounded-full bg-blue-100 p-3 dark:bg-blue-950/60">
+                    <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.305a11.95 11.95 0 015.814-5.518l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/>
                     </svg>
                 </span>
                 <div class="min-w-0 flex-1">
-                    <div class="text-lg font-semibold text-gray-900 group-hover:text-blue-700">Продажа</div>
-                    <div class="text-sm text-gray-500">Отчет по суммам продаж</div>
+                    <div class="dashboard-title text-lg font-semibold text-gray-900 group-hover:text-blue-700 dark:text-white dark:group-hover:text-blue-400">Продажа</div>
+                    <div class="dashboard-subtitle text-sm text-gray-500 dark:text-gray-400">Отчет по суммам продаж</div>
                     {% if dashboard_sales and dashboard_sales.overall_totals %}
                     <div class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-                        <span class="text-gray-500">По факту: <span class="font-semibold text-gray-900 tabular-nums">{{ dashboard_sales.overall_totals.converted_total_usd }}</span> <span class="text-gray-400 text-xs">USD</span></span>
+                        <span class="dashboard-subtitle text-gray-500 dark:text-gray-400">По факту: <span class="dashboard-value font-semibold text-gray-900 tabular-nums dark:text-white">{{ dashboard_sales.overall_totals.converted_total_usd }}</span> <span class="dashboard-subtitle text-gray-400 text-xs dark:text-gray-500">USD</span></span>
                     </div>
                     {% endif %}
                 </div>
@@ -41,19 +69,19 @@
         </a>
 
         <!-- Выручка -->
-        <a href="{% url 'admin:revenue' %}" class="block rounded-default border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition group">
+        <a href="{% url 'admin:revenue' %}" class="dashboard-light-card block rounded-default border border-gray-200 bg-white p-6 shadow-sm transition group hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-green-900/70">
             <div class="flex items-center gap-4">
-                <span class="inline-flex items-center justify-center rounded-full bg-green-100 p-3">
-                    <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <span class="inline-flex items-center justify-center rounded-full bg-green-100 p-3 dark:bg-green-950/60">
+                    <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                 </span>
                 <div class="min-w-0 flex-1">
-                    <div class="text-lg font-semibold text-gray-900 group-hover:text-green-700">Выручка</div>
-                    <div class="text-sm text-gray-500">Отчет по суммам выручки</div>
+                    <div class="dashboard-title text-lg font-semibold text-gray-900 group-hover:text-green-700 dark:text-white dark:group-hover:text-green-400">Выручка</div>
+                    <div class="dashboard-subtitle text-sm text-gray-500 dark:text-gray-400">Отчет по суммам выручки</div>
                     {% if dashboard_revenue and dashboard_revenue.overall_totals %}
                     <div class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-                        <span class="text-gray-500">По факту: <span class="font-semibold text-gray-900 tabular-nums">{{ dashboard_revenue.overall_totals.total_usd }}</span> <span class="text-gray-400 text-xs">USD</span></span>
+                        <span class="dashboard-subtitle text-gray-500 dark:text-gray-400">По факту: <span class="dashboard-value font-semibold text-gray-900 tabular-nums dark:text-white">{{ dashboard_revenue.overall_totals.total_usd }}</span> <span class="dashboard-subtitle text-gray-400 text-xs dark:text-gray-500">USD</span></span>
                     </div>
                     {% endif %}
                 </div>
@@ -61,19 +89,19 @@
         </a>
 
         <!-- Посещаемость -->
-        <a href="{% url 'admin:attendance' %}" class="block rounded-default border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition group">
+        <a href="{% url 'admin:attendance' %}" class="dashboard-light-card block rounded-default border border-gray-200 bg-white p-6 shadow-sm transition group hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-orange-900/70">
             <div class="flex items-center gap-4">
-                <span class="inline-flex items-center justify-center rounded-full bg-orange-100 p-3">
-                    <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <span class="inline-flex items-center justify-center rounded-full bg-orange-100 p-3 dark:bg-orange-950/60">
+                    <svg class="w-7 h-7 text-orange-500 dark:text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                     </svg>
                 </span>
                 <div>
-                    <div class="text-lg font-semibold text-gray-900">Посещаемость</div>
-                    <div class="text-sm text-gray-500">Отчет по плану и факту визитов</div>
+                    <div class="dashboard-title text-lg font-semibold text-gray-900 dark:text-white">Посещаемость</div>
+                    <div class="dashboard-subtitle text-sm text-gray-500 dark:text-gray-400">Отчет по плану и факту визитов</div>
                     {% if dashboard_attendance and dashboard_attendance.overall_totals %}
                     <div class="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-                        <span class="text-gray-500">По факту: <span class="font-semibold text-gray-900 tabular-nums">{{ dashboard_attendance.overall_totals.fact }}</span></span>
+                        <span class="dashboard-subtitle text-gray-500 dark:text-gray-400">По факту: <span class="dashboard-value font-semibold text-gray-900 tabular-nums dark:text-white">{{ dashboard_attendance.overall_totals.fact }}</span></span>
                     </div>
                     {% endif %}
                 </div>
@@ -82,7 +110,7 @@
     </div>
 
     {% if dashboard_errors %}
-        <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div class="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
             {% for e in dashboard_errors %}
                 <div>{{ e }}</div>
             {% endfor %}
@@ -95,17 +123,17 @@
         
 
             {% if dashboard_sales and dashboard_sales.tp_totals %}
-                <div class="rounded-default border border-gray-200 bg-white p-5 shadow-sm mb-4">
-                    <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">Прогресс тп по продажам</div>
+                <div class="dashboard-light-card rounded-default border border-gray-200 bg-white p-5 shadow-sm mb-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="dashboard-subtitle text-xs font-semibold uppercase tracking-wide text-gray-500 text-center mb-2 dark:text-gray-400">Прогресс тп по продажам</div>
                     <div class="mt-3 relative h-[160px] w-[200px] mx-auto">
                         <canvas id="sales-plan-fact-chart" height="160" width="200"></canvas>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div id="sales-plan-fact-center" class="text-2xl font-bold text-gray-700 tabular-nums">—</div>
+                            <div id="sales-plan-fact-center" class="dashboard-center-value text-2xl font-bold text-gray-700 tabular-nums dark:text-gray-100">—</div>
                         </div>
                     </div>
-                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600">
-                        <span class="px-1">План: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_sales.tp_totals.plan }}</span></span>
-                        <span class="px-1">Факт: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_sales.tp_totals.converted_total_usd }}</span></span>
+                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span class="dashboard-subtitle px-1">План: <span class="dashboard-value font-semibold tabular-nums text-gray-900 dark:text-white">{{ dashboard_sales.tp_totals.plan }}</span></span>
+                        <span class="dashboard-subtitle px-1">Факт: <span class="dashboard-value font-semibold tabular-nums text-gray-900 dark:text-white">{{ dashboard_sales.tp_totals.converted_total_usd }}</span></span>
                     </div>
                 </div>
             {% endif %}
@@ -115,17 +143,17 @@
         <!-- Выручка -->
         <div class="space-y-4">
             {% if dashboard_revenue and dashboard_revenue.tp_totals %}
-                <div class="rounded-default border border-gray-200 bg-white p-5 shadow-sm mb-4">
-                    <div class="text-xs font-semibold uppercase tracking-wide text-gray-500  text-center">Прогресс тп по выручке</div>
+                <div class="dashboard-light-card rounded-default border border-gray-200 bg-white p-5 shadow-sm mb-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="dashboard-subtitle text-xs font-semibold uppercase tracking-wide text-gray-500  text-center mb-2 dark:text-gray-400">Прогресс тп по выручке</div>
                     <div class="mt-3 relative h-[160px] w-[200px] mx-auto">
                         <canvas id="revenue-plan-fact-chart" height="160" width="200"></canvas>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div id="revenue-plan-fact-center" class="text-2xl font-bold text-gray-700 tabular-nums">—</div>
+                            <div id="revenue-plan-fact-center" class="dashboard-center-value text-2xl font-bold text-gray-700 tabular-nums dark:text-gray-100">—</div>
                         </div>
                     </div>
-                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600">
-                        <span class="px-1">План: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_revenue.tp_totals.plan }}</span></span>
-                        <span class="px-1">Факт: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_revenue.tp_totals.total_usd }}</span></span>
+                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span class="dashboard-subtitle px-1">План: <span class="dashboard-value font-semibold tabular-nums text-gray-900 dark:text-white">{{ dashboard_revenue.tp_totals.plan }}</span></span>
+                        <span class="dashboard-subtitle px-1">Факт: <span class="dashboard-value font-semibold tabular-nums text-gray-900 dark:text-white">{{ dashboard_revenue.tp_totals.total_usd }}</span></span>
                     </div>
                 </div>
             {% endif %}
@@ -134,17 +162,17 @@
         <!-- Посещаемость -->
         <div class="space-y-4">
             {% if dashboard_attendance and dashboard_attendance.overall_totals %}
-                <div class="rounded-default border border-gray-200 bg-white p-5 shadow-sm mb-4">
-                    <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">Прогресс тп по плановому визиту</div>
+                <div class="dashboard-light-card rounded-default border border-gray-200 bg-white p-5 shadow-sm mb-4 dark:border-gray-800 dark:bg-gray-900">
+                    <div class="dashboard-subtitle text-xs font-semibold uppercase tracking-wide text-gray-500 text-center mb-2 dark:text-gray-400">Прогресс тп по плановому визиту</div>
                     <div class="mt-3 relative h-[160px] w-[200px] mx-auto">
                         <canvas id="attendance-plan-fact-chart" height="160" width="200"></canvas>
                         <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div id="attendance-plan-fact-center" class="text-2xl font-bold text-gray-700 tabular-nums">—</div>
+                            <div id="attendance-plan-fact-center" class="dashboard-center-value text-2xl font-bold text-gray-700 tabular-nums dark:text-gray-100">—</div>
                         </div>
                     </div>
-                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600">
-                        <span class="px-1">План: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_attendance.overall_totals.plan }}</span></span>
-                        <span class="px-1">Факт: <span class="font-semibold tabular-nums text-gray-900">{{ dashboard_attendance.overall_totals.fact }}</span></span>
+                    <div class="mt-3 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <span class="dashboard-subtitle px-1">План: <span class="dashboard-value font-semibold tabular-nums text-gray-900 dark:text-white">{{ dashboard_attendance.overall_totals.plan }}</span></span>
+                        <span class="dashboard-subtitle px-1">Факт: <span class="dashboard-value font-semibold tabular-nums text-gray-900 dark:text-white">{{ dashboard_attendance.overall_totals.fact }}</span></span>
                     </div>
                   
                 </div>
